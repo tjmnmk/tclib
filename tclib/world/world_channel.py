@@ -79,8 +79,6 @@ class WorldChannel(WorldPrototype):
         """
         SMSG_CHANNEL_LIST
         
-        .. todo:: toto je verze pouze pro cata, dodelat ostatni
-        
         Returns
         ----------
         channel : Channel
