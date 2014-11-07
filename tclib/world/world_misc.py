@@ -95,7 +95,7 @@ class WorldMisc(WorldPrototype):
         
         buff = bytebuff()
         buff.add("I", 1) #unknown, always 1
-        self._connection.send(CMSG_CONTACT_LIST, buff)
+        self._send(CMSG_CONTACT_LIST, buff)
         
     def send_add_ignore(self, player_name):
         """
@@ -108,7 +108,7 @@ class WorldMisc(WorldPrototype):
         
         buff = bytebuff()
         buff.add("S", player_name)
-        self._connection.send(CMSG_ADD_IGNORE, buff)
+        self._send(CMSG_ADD_IGNORE, buff)
         
     def send_played_time(self, show = True):
         """
@@ -121,7 +121,7 @@ class WorldMisc(WorldPrototype):
         
         buff = bytebuff()
         buff.add("B", int(show))
-        self._connection.send(CMSG_PLAYED_TIME, buff)
+        self._send(CMSG_PLAYED_TIME, buff)
         
     def _handle_played_time(self, cmd, buff):
         """

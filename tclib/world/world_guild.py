@@ -73,7 +73,7 @@ class WorldGuild(WorldPrototype):
         
         buff = bytebuff()
         buff.add("I", guild_id)
-        self._connection.send(CMSG_GUILD_QUERY, buff)
+        self._send(CMSG_GUILD_QUERY, buff)
         
     def _handle_guild_query(self, cmd, buff):
         """
