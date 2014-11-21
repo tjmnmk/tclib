@@ -25,7 +25,7 @@ class bytebuff(object):
         default_order : str
         """
 
-        self.data = data
+        self.data = data # TODO: use something muttable
         self.default_order = default_order
         
         self._position = position
