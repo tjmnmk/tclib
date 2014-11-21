@@ -34,7 +34,7 @@ class Callback(threading.Thread):
                 continue
             
             func, parrent = self._callbacks[cmd]
-            try: # TODO: try rewrite this shit
+            try:
                 if parrent == None:
                     if args != None:
                         func(cmd, *args)
