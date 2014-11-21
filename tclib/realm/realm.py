@@ -79,8 +79,7 @@ class Realm(threading.Thread):
                 self._err = StreamBrokenError(e)
         except Exception as e:
             logging.getLogger("tclib").exception(e)
-            os._exit(2) # kill all threads
-            
+            raise
             
     def _connect(self):
         self._connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
