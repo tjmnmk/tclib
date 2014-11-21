@@ -253,8 +253,6 @@ class Realm(threading.Thread):
     def _handle_logon_proof(self):            
         """ CMD_LOGON_PROOF
         
-            .. todo:: Vanilla support
-        
             uint8_t         cmd
             uint8_t         err
             uint8_t         M2[20]
@@ -269,7 +267,7 @@ class Realm(threading.Thread):
         buff.data = self._recv("B")
         err = buff.get("B")
         
-        if err != WOW_SUCCESS: # VANILLA - mozna zmena
+        if err != WOW_SUCCESS:
             raise LogonProofError(err)
             
         if self._ver >= EXPANSION_TBC:
