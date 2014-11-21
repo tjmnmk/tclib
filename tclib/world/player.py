@@ -68,6 +68,14 @@ class Player(object):
         if not isinstance(other_player, Player):
             raise NotImplemented()
         return bool(self.guid == other_player.guid)
+    
+    def __copy__(self):
+        new = type(self)()
+        new.__dict__.update(self.__dict__)
+        return new
+    
+    def __deepcopy__(self, memo):
+        return self.__copy__()
 
     _iter_list = ("guid", 
                  "name", 
