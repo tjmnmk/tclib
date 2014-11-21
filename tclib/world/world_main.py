@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+import copy
 from Crypto.Hash import SHA
 from Crypto.Random import random as c_random
 
@@ -680,8 +681,6 @@ class World(threading.Thread,
         """
         _handle_char_enum; SMSG_CHAR_ENUM
         
-        .. todo:: copy _my_players
-        
         Returns
         ----------
         _my_players : dict of Players
@@ -696,7 +695,9 @@ class World(threading.Thread,
         while 1:
             self.err()
             if self._char_enum_done:
-                return self._my_players
+                _my_players_copy = []
+                for player in self._my_players:
+                    _my_players_copy.append(copy.deepcopy(player))
             if start_time + timeout < monotonic_time.monotonic_time():
                 break
             time.sleep(WAIT_FUNC_SLEEP)
