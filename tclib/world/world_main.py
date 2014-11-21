@@ -698,6 +698,7 @@ class World(threading.Thread,
                 _my_players_copy = []
                 for player in self._my_players:
                     _my_players_copy.append(copy.deepcopy(player))
+                return _my_players_copy
             if start_time + timeout < monotonic_time.monotonic_time():
                 break
             time.sleep(WAIT_FUNC_SLEEP)
