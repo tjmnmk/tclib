@@ -6,6 +6,7 @@ Trinity Core compatible client library
 Installation
 ============
     git clone https://github.com/meggie-true/tclib.git
+    cd tclib
     python setup.py install
 
 Supported server versions
