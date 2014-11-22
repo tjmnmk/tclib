@@ -15,9 +15,6 @@ from tclib.shared.common import *
 import logging
 import binascii
 
-class CryptoError(Exception):
-    pass
-
 def srp6a(acc_name, acc_password, B_byte, g, N_byte, s_byte):
     """
     TrinityCore modified version
