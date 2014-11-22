@@ -12,9 +12,9 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 import tclib
 import time
 
-acc_name = "acc"
-acc_password = "pass"
-host = "255.255.255.0"
+acc_name = "abwsgers"
+acc_password = "magesos"
+host = "soulwell.gamenode.cz"
 port = 3724
 ver = tclib.WoWVersions(version = "4.3.4")
 
