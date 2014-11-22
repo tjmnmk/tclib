@@ -39,4 +39,3 @@ w.callback.register(tclib.const.SMSG_GM_MESSAGECHAT, handle_message_chat)
 
 while 1:
     time.sleep(10)
-
