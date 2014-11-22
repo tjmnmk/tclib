@@ -68,8 +68,7 @@ class Realm(threading.Thread):
                 self._handlers[cmd]()
                 time.sleep(NETWORK_SLEEP)
         except (StreamBrokenError, LogonProofError, LogonChallangeError, CryptoError) as e:
-            print e
-            #logging.getLogger("tclib").exception(e)
+            logging.getLogger("tclib").exception(e)
             self._err = e
         except struct.error as e:
             logging.getLogger("tclib").exception(e)
