@@ -68,7 +68,8 @@ class Realm(threading.Thread):
                 self._handlers[cmd]()
                 time.sleep(NETWORK_SLEEP)
         except (StreamBrokenError, LogonProofError, LogonChallangeError, CryptoError) as e:
-            logging.getLogger("tclib").exception(e)
+            print e
+            #logging.getLogger("tclib").exception(e)
             self._err = e
         except struct.error as e:
             logging.getLogger("tclib").exception(e)
@@ -209,23 +210,32 @@ class Realm(threading.Thread):
             uint8_t             N[32];
             uint8_t             s[32];
             uint8_t             unk2[16];
-            uint8_t             unk3; """
+            uint8_t             security_flag;
+            uint8_t             unk3[]; """
             
         if self.logon_challange_done:
             raise StreamBrokenError()
             
         buff = bytebuff()
-        buff.data = self._recv("B")
+        buff.data = self._recv("2B")
         
+        unk = buff.get("B")
         err = buff.get("B")
         if err != WOW_SUCCESS:
             raise LogonChallangeError(err)
 
-        fmt = "B32s3B32s32s16sB"
+        fmt = "32s3B32s32s16sB"
         buff = bytebuff(self._recv(fmt))
-        unk, B, g_len, g, N_len, N, s, unk2, unk3 = buff.get(fmt)
+        unk, B, g_len, g, N_len, N, s, unk2, security_flag = buff.get(fmt)
         self._M1, self._M2, self._A, self._crc_hash, self._S_hash = \
         srp6a(self._acc_name, self._acc_password, B, g, N, s)
+        
+        if security_flag & 0x01:
+            self._recv(20)
+        elif security_flag & 0x02:
+            self._recv(12)
+        elif security_flag & 0x04:
+            self._recv(1)
         
         self.logon_challange_done = True
         self._send_logon_proof()
