@@ -3,7 +3,7 @@ tclib
 
 Trinity Core compatible client library
 
-I used this library for make [web chat](https://www.corechat.eu/").
+I used this library for make [web chat](https://www.corechat.eu/).
 
 Installation
 ============
