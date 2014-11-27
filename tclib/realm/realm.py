@@ -196,8 +196,6 @@ class Realm(threading.Thread):
         
     def _handle_logon_challange(self):
         """ CMD_LOGON_CHALLANGE
-        
-            .. todo:: na mangos tbc kdyz neexistuje acc to porad posila WOW_SUCCESS, zistit jak to funguje.
             
             uint8_t             cmd;
             uint8_t             err;
