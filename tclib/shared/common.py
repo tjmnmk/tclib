@@ -177,11 +177,7 @@ def int_get_bit(value, pos):
     return bit
 
 def int_numof_1_bit(value):
-    x = 0
-    for i in bin(value)[2:]:
-        if int(i):
-            x += 1
-    return x
+    return bin(value)[2:].count("1")
 
 class CommonTest(unittest.TestCase):
     def setUp(self):
