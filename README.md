@@ -27,3 +27,11 @@ Supported server versions
 * 1.12.2
 * 1.12.1
 
+Usage
+=====
+See example.py
+
+Dependecies
+===========
+* python 2.7
+* pycrypto
