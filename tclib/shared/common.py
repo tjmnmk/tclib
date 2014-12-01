@@ -44,9 +44,7 @@ def bytes_to_int(bytes_r, order):
     assert(order in ("little", "big"))
     
     if order == "little":
-        ar = array.array('B', bytes_r)
-        ar.reverse()
-        bytes_r = ar.tostring()
+        bytes_r = bytes_r[::-1]
     
     return int(bytes_r.encode('hex'), 16)
 
@@ -78,9 +76,7 @@ def int_to_bytes(num, length, order):
         num = num >> 8
 
     if order == "little":
-        ar = array.array('B', bytes_r)
-        ar.reverse()
-        bytes_r = ar.tostring()
+        bytes_r = bytes_r[::-1]
         
     return bytes_r
 

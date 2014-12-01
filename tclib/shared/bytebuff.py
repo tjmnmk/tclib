@@ -9,6 +9,12 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+"""
+Dont comment bad code-rewrite it.
+
+So... rewrite it. :)
+"""
+
 import re
 import struct
 import binascii
