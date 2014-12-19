@@ -223,7 +223,7 @@ class Realm(threading.Thread):
 
         fmt = "32s3B32s32s16sB"
         buff = bytebuff(self._recv(fmt))
-        unk, B, g_len, g, N_len, N, s, unk2, security_flag = buff.get(fmt)
+        B, g_len, g, N_len, N, s, unk2, security_flag = buff.get(fmt)
         self._M1, self._M2, self._A, self._crc_hash, self._S_hash = \
         srp6a(self._acc_name, self._acc_password, B, g, N, s)
         
