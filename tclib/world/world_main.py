@@ -532,9 +532,12 @@ class World(threading.Thread,
                 player.pet_id =            buff.get("I")
                 player.pet_level =         buff.get("I")
                 player.pet_familyid =      buff.get("I")
-                buff.skip(207)
+                if self._ver == EXPANSION_WOTLK:
+                    buff.skip(207)
+                elif self._ver == EXPANSION_TBC:
+                    buff.skip(180)
                 if self._ver == EXPANSION_VANILLA:
-                    buff.skip(4)
+                    buff.skip(211)
             
                 self._player_cache.add(player)
                 players.append(player)
