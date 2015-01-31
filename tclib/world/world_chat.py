@@ -196,7 +196,10 @@ class WorldChat(WorldPrototype):
             source_guid = buff.get("Q")
             source = self.get_player(source_guid)
             source_name = source.name
-            buff.skip(4)
+            if self._ver >= EXPANSION_TBC or msg_type in (CHAT_MSG_YELL,
+                                                          CHAT_MSG_PARTY,
+                                                          CHAT_MSG_SAY,):
+                buff.skip(4)
             if cmd in (SMSG_GM_MESSAGECHAT, CATA_SMSG_GM_MESSAGECHAT):
                 gm_sender_name_len = buff.get("I")
                 gm_sender_name = buff.get("S")
