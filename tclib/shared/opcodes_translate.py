@@ -27,7 +27,7 @@ def opcode_translate_wotlk_cata(wotlk_opcode):
     OPCODENotImplementedError
     KeyError
     """
-    cata_opcode = WOTLK_CATA_OPCODES_TABLE[wotlk_opcode]
+    cata_opcode = WOTLK_CATA_OPCODES_TABLE.get(wotlk_opcode)
     if cata_opcode == None:
         raise OPCODENotImplementedError("OPCODE %d is not implemented in cata" % wotlk_opcode)
     return cata_opcode
@@ -48,7 +48,7 @@ def opcode_translate_cata_wotlk(cata_opcode):
     KeyError
     """
     
-    wotlk_opcode = CATA_WOTLK_OPCODES_TABLE[cata_opcode]
+    wotlk_opcode = CATA_WOTLK_OPCODES_TABLE.get(cata_opcode)
     if wotlk_opcode == None:
         raise OPCODENotImplementedError("OPCODE %d is not implemented in wotlk" % cata_opcode)
     return wotlk_opcode
@@ -69,7 +69,7 @@ def msg_type_translate_wotlk_cata(wotlk_msg_type):
     KeyError
     """
     
-    cata_opcode = WOTLK_CATA_MSG_TYPE_TABLE[wotlk_msg_type]
+    cata_opcode = WOTLK_CATA_MSG_TYPE_TABLE.get(wotlk_msg_type)
     if cata_opcode == None:
         raise OPCODENotImplementedError("MSG TYPE %d is not implemented in wotlk" % cata_opcode)
     return cata_opcode
