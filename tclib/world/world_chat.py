@@ -171,7 +171,7 @@ class WorldChat(WorldPrototype):
               "source"      : source,
             }
         """
-        
+
         msg_type = buff.get("B")
         if self._ver == EXPANSION_VANILLA:
             msg_type = msg_type_translate_vanilla_wotlk(msg_type)
@@ -179,9 +179,6 @@ class WorldChat(WorldPrototype):
         
         if lang == LANG_ADDON:
             return
-        
-        if self._ver == EXPANSION_VANILLA:
-            buff.skip(8 + 4)
         
         if msg_type in (CHAT_MSG_SAY, 
                         CHAT_MSG_PARTY,
@@ -199,7 +196,7 @@ class WorldChat(WorldPrototype):
             if self._ver >= EXPANSION_TBC or msg_type in (CHAT_MSG_YELL,
                                                           CHAT_MSG_PARTY,
                                                           CHAT_MSG_SAY,):
-                buff.skip(4)
+                buff.skip(8)
             if cmd in (SMSG_GM_MESSAGECHAT, CATA_SMSG_GM_MESSAGECHAT):
                 gm_sender_name_len = buff.get("I")
                 gm_sender_name = buff.get("S")
@@ -250,7 +247,9 @@ class WorldChat(WorldPrototype):
                                }
             
         if msg_type == CHAT_MSG_SYSTEM:
-            buff.skip(20)
+            buff.skip(8)
+            if self._ver >= EXPANSION_TBC:
+                buff.skip(12)
             if cmd in (SMSG_GM_MESSAGECHAT, CATA_SMSG_GM_MESSAGECHAT):
                 gm_sender_name_len = buff.get("I")
                 gm_sender_name = buff.get("S")
