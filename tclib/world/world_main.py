@@ -542,7 +542,6 @@ class World(threading.Thread,
                 self._player_cache.add(player)
                 players.append(player)
         
-        print buff
         self._my_players = players
         self._char_enum_done = True
         return players
