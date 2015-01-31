@@ -82,7 +82,8 @@ class WorldMisc(WorldPrototype):
             p.level = buff.get("I")
             p.game_class = buff.get("I")
             p.race = buff.get("I")
-            p.gender = buff.get("B")
+            if self._ver >= EXPANSION_TBC:
+                p.gender = buff.get("B")
             p.zone_id = buff.get("I")
             players.append(p)
             
