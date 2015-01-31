@@ -197,7 +197,8 @@ class WorldChat(WorldPrototype):
             if cmd in (SMSG_GM_MESSAGECHAT, CATA_SMSG_GM_MESSAGECHAT):
                 gm_sender_name_len = buff.get("I")
                 gm_sender_name = buff.get("S")
-            buff.skip(8)
+            if self._ver >= EXPANSION_TBC:
+                buff.skip(8)
             msg_len = buff.get("I")
             msg = buff.get("S")
             chat_tag = buff.get("B")
@@ -223,7 +224,8 @@ class WorldChat(WorldPrototype):
                 gm_sender_name_len = buff.get("I")
                 gm_sender_name = buff.get("S")
             channel = buff.get("S")
-            buff.skip(8)
+            if self._ver >= EXPANSION_TBC:
+                buff.skip(8)
             msg_len = buff.get("I")
             msg = buff.get("S")
             chat_tag = buff.get("B")
@@ -257,7 +259,7 @@ class WorldChat(WorldPrototype):
                                "chat_tag"     : chat_tag,
                                }
             
-        if msg_type in (CHAT_MSG_ACHIEVEMENT, CHAT_MSG_GUILD_ACHIEVEMENT):
+        if msg_type in (CHAT_MSG_ACHIEVEMENT, CHAT_MSG_GUILD_ACHIEVEMENT) and self._ver >= EXPANSION_WOTLK:
             source_guid = buff.get("Q")
             source = self.get_player(source_guid)
             buff.skip(16)
