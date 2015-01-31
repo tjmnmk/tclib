@@ -11,6 +11,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 
 from tclib.shared.exceptions import *
 from tclib.shared.const import *
+from tclib.shared.common import *
 
 def opcode_translate_wotlk_cata(wotlk_opcode):
     """
@@ -25,7 +26,6 @@ def opcode_translate_wotlk_cata(wotlk_opcode):
     Raises
     ------
     OPCODENotImplementedError
-    KeyError
     """
     cata_opcode = WOTLK_CATA_OPCODES_TABLE.get(wotlk_opcode)
     if cata_opcode == None:
@@ -45,7 +45,6 @@ def opcode_translate_cata_wotlk(cata_opcode):
     Raises
     ------
     OPCODENotImplementedError
-    KeyError
     """
     
     wotlk_opcode = CATA_WOTLK_OPCODES_TABLE.get(cata_opcode)
@@ -66,13 +65,103 @@ def msg_type_translate_wotlk_cata(wotlk_msg_type):
     Raises
     ------
     OPCODENotImplementedError
-    KeyError
     """
     
     cata_opcode = WOTLK_CATA_MSG_TYPE_TABLE.get(wotlk_msg_type)
     if cata_opcode == None:
-        raise OPCODENotImplementedError("MSG TYPE %d is not implemented in wotlk" % cata_opcode)
+        raise OPCODENotImplementedError("MSG TYPE %d is not implemented in cata" % cata_opcode)
     return cata_opcode
+
+def msg_type_translate_wotlk_vanilla(wotlk_msg_type):
+    """
+    Parameters
+    ----------
+    wotlk_msg_type : int
+    
+    Returns
+    ----------
+    vanilla : int
+    
+    Raises
+    ------
+    OPCODENotImplementedError
+    """
+    
+    vanilla = WOTLK_VANILLA_MSG_TYPE_TABLE.get(wotlk_msg_type)
+    if vanilla == None:
+        raise OPCODENotImplementedError("MSG TYPE %d is not implemented in vanilla" % vanilla)
+    return vanilla
+
+def msg_type_translate_vanilla_wotlk(vanilla_msg_type):
+    """
+    Parameters
+    ----------
+    vanilla_msg_type : int
+    
+    Returns
+    ----------
+    wotlk : int
+    """
+    
+    return VANILLA_WOTLK_MSG_TYPE_TABLE.get(vanilla_msg_type)
+
+WOTLK_VANILLA_MSG_TYPE_TABLE = {
+CHAT_MSG_SYSTEM                 : VANILLA_CHAT_MSG_SYSTEM,
+CHAT_MSG_SAY                    : VANILLA_CHAT_MSG_SAY,
+CHAT_MSG_PARTY                  : VANILLA_CHAT_MSG_PARTY,
+CHAT_MSG_RAID                   : VANILLA_CHAT_MSG_RAID,
+CHAT_MSG_GUILD                  : VANILLA_CHAT_MSG_GUILD,
+CHAT_MSG_OFFICER                : VANILLA_CHAT_MSG_OFFICER,
+CHAT_MSG_YELL                   : VANILLA_CHAT_MSG_YELL,
+CHAT_MSG_WHISPER                : VANILLA_CHAT_MSG_WHISPER,
+CHAT_MSG_WHISPER_FOREIGN        : None,
+CHAT_MSG_WHISPER_INFORM         : VANILLA_CHAT_MSG_WHISPER_INFORM,
+CHAT_MSG_EMOTE                  : VANILLA_CHAT_MSG_EMOTE,
+CHAT_MSG_TEXT_EMOTE             : VANILLA_CHAT_MSG_TEXT_EMOTE,
+CHAT_MSG_MONSTER_SAY            : VANILLA_CHAT_MSG_MONSTER_SAY,
+CHAT_MSG_MONSTER_PARTY          : None,
+CHAT_MSG_MONSTER_YELL           : VANILLA_CHAT_MSG_MONSTER_YELL,
+CHAT_MSG_MONSTER_WHISPER        : VANILLA_CHAT_MSG_MONSTER_WHISPER,
+CHAT_MSG_MONSTER_EMOTE          : VANILLA_CHAT_MSG_MONSTER_EMOTE,
+CHAT_MSG_CHANNEL                : VANILLA_CHAT_MSG_CHANNEL,
+CHAT_MSG_CHANNEL_JOIN           : VANILLA_CHAT_MSG_CHANNEL_JOIN,
+CHAT_MSG_CHANNEL_LEAVE          : VANILLA_CHAT_MSG_CHANNEL_LEAVE,
+CHAT_MSG_CHANNEL_LIST           : VANILLA_CHAT_MSG_CHANNEL_LIST,
+CHAT_MSG_CHANNEL_NOTICE         : VANILLA_CHAT_MSG_CHANNEL_NOTICE,
+CHAT_MSG_CHANNEL_NOTICE_USER    : VANILLA_CHAT_MSG_CHANNEL_NOTICE_USER,
+CHAT_MSG_AFK                    : VANILLA_CHAT_MSG_AFK,
+CHAT_MSG_DND                    : VANILLA_CHAT_MSG_DND,
+CHAT_MSG_IGNORED                : VANILLA_CHAT_MSG_IGNORED,
+CHAT_MSG_SKILL                  : VANILLA_CHAT_MSG_SKILL,
+CHAT_MSG_LOOT                   : VANILLA_CHAT_MSG_LOOT,
+CHAT_MSG_MONEY                  : None,
+CHAT_MSG_OPENING                : None,
+CHAT_MSG_TRADESKILLS            : None,
+CHAT_MSG_PET_INFO               : None,
+CHAT_MSG_COMBAT_MISC_INFO       : None,
+CHAT_MSG_COMBAT_XP_GAIN         : None,
+CHAT_MSG_COMBAT_HONOR_GAIN      : None,
+CHAT_MSG_COMBAT_FACTION_CHANGE  : None,
+CHAT_MSG_BG_SYSTEM_NEUTRAL      : VANILLA_CHAT_MSG_BG_SYSTEM_NEUTRAL,
+CHAT_MSG_BG_SYSTEM_ALLIANCE     : VANILLA_CHAT_MSG_BG_SYSTEM_ALLIANCE,
+CHAT_MSG_BG_SYSTEM_HORDE        : VANILLA_CHAT_MSG_BG_SYSTEM_HORDE,
+CHAT_MSG_RAID_LEADER            : VANILLA_CHAT_MSG_RAID_LEADER,
+CHAT_MSG_RAID_WARNING           : VANILLA_CHAT_MSG_RAID_WARNING,
+CHAT_MSG_RAID_BOSS_EMOTE        : VANILLA_CHAT_MSG_RAID_BOSS_EMOTE,
+CHAT_MSG_RAID_BOSS_WHISPER      : VANILLA_CHAT_MSG_RAID_BOSS_WHISPER,
+CHAT_MSG_FILTERED               : None,
+CHAT_MSG_BATTLEGROUND           : VANILLA_CHAT_MSG_BATTLEGROUND,
+CHAT_MSG_BATTLEGROUND_LEADER    : VANILLA_CHAT_MSG_BATTLEGROUND_LEADER,
+CHAT_MSG_RESTRICTED             : None,
+CHAT_MSG_BATTLENET              : None,
+CHAT_MSG_ACHIEVEMENT            : None,
+CHAT_MSG_GUILD_ACHIEVEMENT      : None,
+CHAT_MSG_ARENA_POINTS           : None,
+CHAT_MSG_PARTY_LEADER           : None,
+CHAT_MSG_ADDON                  : VANILLA_CHAT_MSG_ADDON,
+}
+
+VANILLA_WOTLK_MSG_TYPE_TABLE = reverse_dict(WOTLK_VANILLA_MSG_TYPE_TABLE)
 
 WOTLK_CATA_OPCODES_TABLE = {
 0x28C    : 0x6015,    # SMSG_PVP_CREDIT

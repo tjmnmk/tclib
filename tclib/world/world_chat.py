@@ -172,6 +172,8 @@ class WorldChat(WorldPrototype):
         """
         
         msg_type = buff.get("B")
+        if self._ver == EXPANSION_VANILLA:
+            msg_type = msg_type_translate_vanilla_wotlk(msg_type)
         lang = buff.get("I")
         
         if lang == LANG_ADDON:
