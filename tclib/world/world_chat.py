@@ -66,6 +66,8 @@ class WorldChat(WorldPrototype):
                 cmd = msg_type_translate_wotlk_cata(msg_type)
                 self._send(cmd, buff, False)
             else:
+                if self._ver == EXPANSION_VANILLA:
+                    msg_type = msg_type_translate_wotlk_vanilla(msg_type)
                 buff.add("I", msg_type)
                 buff.add("I", lang)
                 buff.add("S", to)
@@ -87,6 +89,8 @@ class WorldChat(WorldPrototype):
                 cmd = msg_type_translate_wotlk_cata(msg_type)
                 self._send(cmd, buff, False)
             else:
+                if self._ver == EXPANSION_VANILLA:
+                    msg_type = msg_type_translate_wotlk_vanilla(msg_type)
                 buff.add("I", msg_type)
                 buff.add("I", lang)
                 buff.add("S", msg)
