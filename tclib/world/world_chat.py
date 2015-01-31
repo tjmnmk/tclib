@@ -13,6 +13,7 @@ from tclib.world.world_prototype import *
 from tclib.shared.common import *
 from tclib.shared.bytebuff import *
 from tclib.shared.const import *
+from tclib.shared.opcodes_translate import *
 
 class WorldChat(WorldPrototype):
     def send_message_chat(self, msg_type, msg, to = ""):

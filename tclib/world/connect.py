@@ -9,12 +9,13 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
-from tclib.shared.bytebuff import *
-from crypto import *
 import zlib
 import logging
-
 import errno
+
+from tclib.shared.bytebuff import *
+from tclib.shared.opcodes_translate import *
+from crypto import *
 
 NETWORK_LOOP_SLEEP = 0.2      
 

@@ -25,6 +25,7 @@ from tclib.world.world_channel import *
 from tclib.world.world_chat import *
 from tclib.world.world_misc import *
 from tclib.world.world_prototype import *
+from tclib.shared.opcodes_translate import *
 
 RECV_LOOP_SLEEP = 0.2
 WAIT_FUNC_SLEEP = 0.2
