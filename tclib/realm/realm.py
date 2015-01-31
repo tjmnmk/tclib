@@ -332,8 +332,11 @@ class Realm(threading.Thread):
         buff = bytebuff(self._recv(size))
         
         buff.skip(4)
-        number_of_realms = buff.get("H")
-        
+        if self._ver >= EXPANSION_TBC:
+            number_of_realms = buff.get("H")
+        else:
+            number_of_realms = buff.get("B")
+            
         realms = {}
         realm_id = 1
         for i in range(number_of_realms):

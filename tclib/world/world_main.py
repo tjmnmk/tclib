@@ -537,11 +537,12 @@ class World(threading.Thread,
                 elif self._ver == EXPANSION_TBC:
                     buff.skip(180)
                 if self._ver == EXPANSION_VANILLA:
-                    buff.skip(211)
+                    buff.skip(100)
             
                 self._player_cache.add(player)
                 players.append(player)
         
+        print buff
         self._my_players = players
         self._char_enum_done = True
         return players
