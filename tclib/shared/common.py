@@ -22,7 +22,6 @@ import errno
 
 from tclib.shared.exceptions import *
 from tclib.shared.const import *
-from tclib.shared.opcodes_translate import *
 
 def bytes_to_int(bytes_r, order):
     """
