@@ -219,19 +219,25 @@ class WorldChat(WorldPrototype):
                                }
             
         if msg_type == CHAT_MSG_CHANNEL:
-            source_guid = buff.get("Q")
-            source = self.get_player(source_guid)
-            source_name = source.name
+            if self._ver >= EXPANSION_TBC:
+                source_guid = buff.get("Q")
+            else:
+                channel = buff.get("S")
             buff.skip(4)
             if cmd in (SMSG_GM_MESSAGECHAT, CATA_SMSG_GM_MESSAGECHAT):
                 gm_sender_name_len = buff.get("I")
                 gm_sender_name = buff.get("S")
-            channel = buff.get("S")
+            if self._ver >= EXPANSION_TBC:
+                channel = buff.get("S")
+            else:
+                source_guid = buff.get("Q")
             if self._ver >= EXPANSION_TBC:
                 buff.skip(8)
             msg_len = buff.get("I")
             msg = buff.get("S")
             chat_tag = buff.get("B")
+            source = self.get_player(source_guid)
+            source_name = source.name
             
             if lang not in self._my_player.supported_langs:
                 msg_encoded = msg.encode("rot13")
