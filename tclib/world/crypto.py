@@ -136,7 +136,6 @@ class Crypto_VANILLA(CryptoPrototype):
         CryptoPrototype.__init__(self, S_hash)
         
         self._key = S_hash
-        self._lock = threading.RLock()
         
         self._send_i = 0
         self._send_j = 0
@@ -145,7 +144,7 @@ class Crypto_VANILLA(CryptoPrototype):
         
     def decrypt(self, data):
         decrypted_data = ""
-        with self._lock:
+        with self._decrypt_lock:
             for ch in data:
                 self._recv_i %= len(self._key)
                 x = (ord(ch) - self._recv_j) ^ ord(self._key[self._recv_i])
@@ -157,7 +156,7 @@ class Crypto_VANILLA(CryptoPrototype):
     
     def encrypt(self, data):
         encrypted_data = ""
-        with self._lock:
+        with self._encrypt_lock:
             for ch in data:
                 self._send_i %= len(self._key)
                 x = (ord(ch) ^ ord(self._key[self._send_i])) + self._send_j
