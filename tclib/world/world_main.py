@@ -668,6 +668,10 @@ class World(threading.Thread,
         Parameters
         ----------
         player : Player or str
+        
+        Raises
+        ------
+        BadPlayer
         """
         
         if isinstance(player, str):
