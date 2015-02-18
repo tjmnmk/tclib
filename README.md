@@ -7,7 +7,7 @@ I used this library for make [web chat](https://www.corechat.eu/) and [tcbot](ht
 
 Installation
 ============
-	pip install pycrypto
+    pip install pycrypto
     git clone https://github.com/meggie-true/tclib.git
     cd tclib
     python setup.py install
