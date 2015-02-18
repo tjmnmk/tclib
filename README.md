@@ -3,10 +3,11 @@ tclib
 
 Trinity Core compatible client library
 
-I used this library for make [web chat](https://www.corechat.eu/).
+I used this library for make [web chat](https://www.corechat.eu/) and [tcbot](https://github.com/meggie-true/tcbot).
 
 Installation
 ============
+	pip install pycrypto
     git clone https://github.com/meggie-true/tclib.git
     cd tclib
     python setup.py install
@@ -27,9 +28,9 @@ Supported server versions
 * 1.12.2
 * 1.12.1
 
-Usage
-=====
-See example.py
+Example
+=======
+See [tcbot](https://github.com/meggie-true/tcbot)
 
 Dependecies
 ===========
