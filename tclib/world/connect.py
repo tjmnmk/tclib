@@ -140,14 +140,12 @@ class WorldConnect(threading.Thread):
     def _worker(self):
         self._connect()
         # SMSG_AUTH_CHALLENGE
-        # > CATA
         if self._ver >= EXPANSION_CATA: #rewrite
-            self._connection.recv(50) #MSG_VERIFY_CONNECTIVITY # TODO: REWRITE!!!
-            self._send("\x00\x2fWORLD OF WARCRAFT CONNECTION - CLIENT TO SERVER") # TODO: REWRITE!!!
-            buff = bytebuff(self._connection.recv(41)) # TODO: REWRITE!!!
-        # < CATA
+            self._connection.recv(50, socket.MSG_WAITALL)
+            self._send("\x00\x2fWORLD OF WARCRAFT CONNECTION - CLIENT TO SERVER")
+            buff = bytebuff(self._connection.recv(41, socket.MSG_WAITALL))
         else:
-            buff = bytebuff(self._connection.recv(44)) # TODO: REWRITE!!!
+            buff = bytebuff(self._connection.recv(44, socket.MSG_WAITALL))
         size = buff.get(">H") # wotlk - 42, cata - 39; tbc - 6
         cmd = buff.get("H")
         if self._ver >= EXPANSION_CATA:
@@ -176,6 +174,9 @@ class WorldConnect(threading.Thread):
                     self._send_command(cmd, buff)
                 except Queue.Empty:
                     break
+                
+    def _recv_all(self):
+        
 
     def _recv_command(self, decrypt = True):
         """
