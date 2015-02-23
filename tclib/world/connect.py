@@ -175,9 +175,6 @@ class WorldConnect(threading.Thread):
                 except Queue.Empty:
                     break
                 
-    def _recv_all(self):
-        
-
     def _recv_command(self, decrypt = True):
         """
         .. todo:: rewrite
