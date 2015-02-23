@@ -147,23 +147,25 @@ class Realm(threading.Thread):
             raise self._err
         
     def _send_logon_challange(self):
-        """ CMD_LOGON_CHALLANGE
+        """
+        CMD_LOGON_CHALLANGE
         
-            uint8_t            cmd
-            uint8_t            err
-            uint16_t           size
-            uint8_t            gamename[4]
-            uint8_t            version1
-            uint8_t            version2
-            uint8_t            version3
-            uint16_t           build
-            uint8_t            platform[4] // NUL TERMINATED
-            uint8_t            os[4]       // NUL TERMINATED
-            uint8_t            country[4]
-            uint32_t           timezone_bias
-            uint32_t           ip
-            uint8_t            I_len
-            uint8_t            I[] """
+        uint8_t            cmd
+        uint8_t            err
+        uint16_t           size
+        uint8_t            gamename[4]
+        uint8_t            version1
+        uint8_t            version2
+        uint8_t            version3
+        uint16_t           build
+        uint8_t            platform[4] // NUL TERMINATED
+        uint8_t            os[4]       // NUL TERMINATED
+        uint8_t            country[4]
+        uint32_t           timezone_bias
+        uint32_t           ip
+        uint8_t            I_len
+        uint8_t            I[]
+        """
         
         buff = bytebuff()
         
@@ -195,20 +197,22 @@ class Realm(threading.Thread):
         self._send_command(CMD_LOGON_CHALLANGE, buff.data)
         
     def _handle_logon_challange(self):
-        """ CMD_LOGON_CHALLANGE
+        """
+        CMD_LOGON_CHALLANGE
             
-            uint8_t             cmd;
-            uint8_t             err;
-            uint8_t             unk;
-            uint8_t             B[32];
-            uint8_t             g_len;
-            uint8_t             g;
-            uint8_t             N_len;
-            uint8_t             N[32];
-            uint8_t             s[32];
-            uint8_t             unk2[16];
-            uint8_t             security_flag;
-            uint8_t             unk3[]; """
+        uint8_t             cmd;
+        uint8_t             err;
+        uint8_t             unk;
+        uint8_t             B[32];
+        uint8_t             g_len;
+        uint8_t             g;
+        uint8_t             N_len;
+        uint8_t             N[32];
+        uint8_t             s[32];
+        uint8_t             unk2[16];
+        uint8_t             security_flag;
+        uint8_t             unk3[];
+        """
             
         if self.logon_challange_done:
             raise StreamBrokenError()
@@ -238,14 +242,16 @@ class Realm(threading.Thread):
         self._send_logon_proof()
         
     def _send_logon_proof(self):
-        """ CMD_LOGON_PROOF
-        
-            uint8_t            cmd
-            uint8_t            A[32]
-            uint8_t            M1[20]
-            uint8_t            crc_hash[20]
-            uint8_t            number_of_keys
-            uint8_t            unk """
+        """
+        CMD_LOGON_PROOF
+    
+        uint8_t            cmd
+        uint8_t            A[32]
+        uint8_t            M1[20]
+        uint8_t            crc_hash[20]
+        uint8_t            number_of_keys
+        uint8_t            unk
+        """
             
         buff = bytebuff()
         
@@ -257,14 +263,16 @@ class Realm(threading.Thread):
         self._send_command(CMD_LOGON_PROOF, buff.data)
         
     def _handle_logon_proof(self):            
-        """ CMD_LOGON_PROOF
+        """
+        CMD_LOGON_PROOF
         
-            uint8_t         cmd
-            uint8_t         err
-            uint8_t         M2[20]
-            uint32_t        account_flags
-            uint32_t        survey_id     // TBC+
-            uint16_t        unk           // TBC+ """
+        uint8_t         cmd
+        uint8_t         err
+        uint8_t         M2[20]
+        uint32_t        account_flags
+        uint32_t        survey_id     // TBC+
+        uint16_t        unk           // TBC+ 
+        """
             
         if not self.logon_challange_done or self.logon_proof_done:
             raise StreamBrokenError()
@@ -299,24 +307,26 @@ class Realm(threading.Thread):
         self._send_command(CMD_REALM_LIST, buff.data)
         
     def _handle_realm_list(self):           
-        """ CMD_REALM_LIST
+        """ 
+        CMD_REALM_LIST
             
-            header:
-            uint8_t             cmd
-            uint16_t            size
-            uint32_t            unk
-            uint16_t            number_of_realms
-            
-            realm:
-            uint8_t             realmtype
-            uint8_t             online
-            uint8_t             color
-            uint8_t             name[]
-            uint8_t             address[]
-            uint32_t            population
-            uint8_t             number_of_chars
-            uint8_t             timezone
-            uint8_t             unk """
+        header:
+        uint8_t             cmd
+        uint16_t            size
+        uint32_t            unk
+        uint16_t            number_of_realms
+        
+        realm:
+        uint8_t             realmtype
+        uint8_t             online
+        uint8_t             color
+        uint8_t             name[]
+        uint8_t             address[]
+        uint32_t            population
+        uint8_t             number_of_chars
+        uint8_t             timezone
+        uint8_t             unk 
+        """
             
         if not self.logon_proof_done or self.realm_list_done:
             raise StreamBrokenError()
