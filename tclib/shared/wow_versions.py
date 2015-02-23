@@ -168,10 +168,7 @@ class WoWVersions(object):
     
     def __cmp__(self, value):
         if isinstance(value, int) or isinstance(value, long):
-            if value < 10: # TODO: rewrite
-                return cmp(self.get_expansion(), value)
-            else:
-                return cmp(self.get_build(), value)
+            return cmp(self.get_expansion(), value)
                 
         if isinstance(value, str):
             value = WoWVersions(version=value)
