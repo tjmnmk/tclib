@@ -172,7 +172,12 @@ class World(threading.Thread,
             some crypto shit
         """
         
-        if self._ver >= EXPANSION_CATA:
+        if self._ver == EXPANSION_PANDA:
+            buff.skip(2)
+            buff.skip(8 * 4)
+            buff.skip(1)
+            self._server_seed = buff.get("4s")
+        if self._ver == EXPANSION_CATA:
             seed1 = buff.get("16s")
             seed2 = buff.get("16s")
             self._server_seed = buff.get("4s")
