@@ -76,6 +76,7 @@ EXPANSION_VANILLA                            = 0x01
 EXPANSION_TBC                                = 0x02
 EXPANSION_WOTLK                              = 0x03
 EXPANSION_CATA                               = 0x04
+EXPANSION_PANDA                              = 0x05
 
 " WORLD OPCODES < CATA "
 MSG_NULL_ACTION                                 = 0x000
