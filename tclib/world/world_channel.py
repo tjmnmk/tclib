@@ -431,9 +431,15 @@ class Channel(object):
                                 }
         
         if notify_type == CHAT_MODE_CHANGE_NOTICE:
+            player = Player()
+            player_guid = buff.get("Q")
+            old_flags = buff.get("B")
             self.my_flags = buff.get("B")
-            return notify_type, { 
-                                "my_flags" : self.my_flags 
+            player = self._world.get_player(player_guid)
+            return notify_type, {
+                                "player"      : player,
+                                "old_flags"   : old_flags,
+                                "new_flags"   : self.my_flags,
                                 }
         
         if notify_type in (CHAT_PLAYER_KICKED_NOTICE, 
