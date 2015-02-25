@@ -204,7 +204,53 @@ class World(threading.Thread,
         client_seed = int_to_bytes(c_random.getrandbits(4*8), 4, "little")
         K = SHA.new(self._acc_name + "\0" * 4 + client_seed + self._server_seed + self._S_hash).digest()
         
-        if self._ver >= EXPANSION_CATA:
+        if self._ver == EXPANSION_PANDA:
+            buff.add_zeros(4)
+            buff.add("s", K[14])
+            buff.add("s", K[8])
+            buff.add_zeros(4)
+            buff.add("s", K[10])
+            buff.add("s", K[19])
+            buff.add("s", K[16])
+            buff.add("s", K[13])
+            buff.add("s", K[4])
+            buff.add_zeros(1)
+            buff.add("s", K[9])
+            buff.add("s", K[0])
+            buff.add("4s", client_seed)
+            buff.add("s", K[5])
+            buff.add("s", K[2])
+            buff.add("H", self._ver.get_build())
+            buff.add("s", K[12])
+            buff.add_zeros(4)
+            buff.add("s", K[12])
+            
+    recvPacket >> digest[10];
+    recvPacket >> digest[19];
+    recvPacket >> digest[16];
+    recvPacket >> digest[13];
+    recvPacket >> digest[4];
+    recvPacket.read_skip<uint8>();
+    recvPacket >> digest[9];
+    recvPacket >> digest[0];
+    recvPacket >> clientSeed;
+    recvPacket >> digest[5];
+    recvPacket >> digest[2];
+    recvPacket >> clientBuild;
+    recvPacket >> digest[12];
+    recvPacket.read_skip<uint32>();
+    recvPacket >> digest[18];
+    recvPacket >> digest[17];
+    recvPacket >> digest[11];
+    recvPacket.read_skip<uint64>();
+    recvPacket >> digest[7];
+    recvPacket >> digest[1];
+    recvPacket >> digest[3];
+    recvPacket.read_skip<uint8>();
+    recvPacket >> digest[6];
+    recvPacket.read_skip<uint32>();
+    recvPacket >> digest[15];
+        elif self._ver == EXPANSION_CATA:
             buff.add_zeros(9)
             buff.add("s", K[10])
             buff.add("s", K[18])
