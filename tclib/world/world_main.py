@@ -703,8 +703,12 @@ class World(threading.Thread,
         
         buff = bytebuff()
         tick = (monotonic_time.monotonic_time() - self._client_start_time) * 1000
-        buff.add("I", time_sync_counter)
-        buff.add("I", tick)
+        if self._ver >= EXPANSION_PANDA:
+            buff.add("I", tick)
+            buff.add("I", time_sync_counter)
+        else:
+            buff.add("I", time_sync_counter)
+            buff.add("I", tick)
         self._send(CMSG_TIME_SYNC_RESP, buff)
         
     def login(self, player):
