@@ -609,13 +609,19 @@ class World(threading.Thread,
         buff = bytebuff()
         if self._ver >= EXPANSION_CATA:
             guid_packed = struct.pack("<Q", guid)
-            for i in (2, 3, 0, 6, 4, 5, 1, 7):
+            if self._ver >= EXPANSION_PANDA:
+                bits_order =  (1, 4, 7, 3, 2, 6, 5, 0)
+                bytes_order = (5, 1, 0, 6, 2, 4, 3, 7)
+            else:
+                bits_order = (2, 3, 0, 6, 4, 5, 1, 7)
+                bytes_order = (2, 7, 0, 3, 5, 6, 1, 4)
+            for i in bits_order:
                 if ord(guid_packed[i]):
                     buff.add_bit(1)
                 else:
                     buff.add_bit(0)
             
-            for i in (2, 7, 0, 3, 5, 6, 1, 4):
+            for i in bytes_order:
                 if ord(guid_packed[i]):
                     buff.add("B", ord(guid_packed[i]) ^ 1)   
         else:
