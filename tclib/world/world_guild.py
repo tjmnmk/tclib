@@ -90,6 +90,9 @@ class WorldGuild(WorldPrototype):
         rank_names   : list of str
         """
         
+        if self._ver >= EXPANSION_CATA:
+            raise NotImplementedError # TODO: implement
+        
         buff = bytebuff()
         guild_id = buff.get("I")
         guild_name = buff.get("S")
