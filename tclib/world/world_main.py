@@ -223,33 +223,21 @@ class World(threading.Thread,
             buff.add("H", self._ver.get_build())
             buff.add("s", K[12])
             buff.add_zeros(4)
-            buff.add("s", K[12])
-            
-    recvPacket >> digest[10];
-    recvPacket >> digest[19];
-    recvPacket >> digest[16];
-    recvPacket >> digest[13];
-    recvPacket >> digest[4];
-    recvPacket.read_skip<uint8>();
-    recvPacket >> digest[9];
-    recvPacket >> digest[0];
-    recvPacket >> clientSeed;
-    recvPacket >> digest[5];
-    recvPacket >> digest[2];
-    recvPacket >> clientBuild;
-    recvPacket >> digest[12];
-    recvPacket.read_skip<uint32>();
-    recvPacket >> digest[18];
-    recvPacket >> digest[17];
-    recvPacket >> digest[11];
-    recvPacket.read_skip<uint64>();
-    recvPacket >> digest[7];
-    recvPacket >> digest[1];
-    recvPacket >> digest[3];
-    recvPacket.read_skip<uint8>();
-    recvPacket >> digest[6];
-    recvPacket.read_skip<uint32>();
-    recvPacket >> digest[15];
+            buff.add("s", K[18])
+            buff.add("s", K[17])
+            buff.add("s", K[11])
+            buff.add_zeros(8)
+            buff.add("s", K[7])
+            buff.add("s", K[1])
+            buff.add("s", K[3])
+            buff.add_zeros(1)
+            buff.add("s", K[6])
+            buff.add_zeros(4)
+            buff.add("s", K[15])
+            buff.add_zeros(4)
+            buff.add("13t", len(self._acc_name))
+            buff.fill_byte()
+            buff.add("k", self._acc_name)
         elif self._ver == EXPANSION_CATA:
             buff.add_zeros(9)
             buff.add("s", K[10])
@@ -342,7 +330,8 @@ class World(threading.Thread,
             player = Player()
             player.guid = guid
             player.name = buff.get("S")
-            player.realm = buff.get("S")
+            if self._ver <= EXPANSION_WOTLK:
+                player.realm = buff.get("S")
             if self._ver >= EXPANSION_WOTLK:
                 player.race = buff.get("B")
                 player.gender = buff.get("B")
