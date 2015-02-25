@@ -68,6 +68,9 @@ class WorldGuild(WorldPrototype):
         guild_id : int
         """
         
+        if self._ver >= EXPANSION_CATA:
+            raise NotImplementedError # TODO: implement
+        
         if guild_id == None:
             guild_id = self._my_player.guild_id
         
