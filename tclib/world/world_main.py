@@ -463,9 +463,9 @@ class World(threading.Thread,
             return 0
         
         if self._ver >= EXPANSION_CATA:
-            buff.skip(3)
             try:
                 if self._ver == EXPANSION_CATA:
+                    buff.skip(3)
                     num_of_chars = buff.get("17t")
                 else:
                     num_of_chars = buff.get("16t")
