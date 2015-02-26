@@ -49,7 +49,7 @@ class WorldConnect(threading.Thread):
         elif self._ver == EXPANSION_TBC:
             self._crypto = CryptoTBC(S_hash)
         else:
-            self._crypto = Crypto_VANILLA(S_hash)
+            self._crypto = CryptoVANILLA(S_hash)
         self._recv_buff = "" # _recv_to_buff; _recv_command
         self._decrypted_header = () # size; cmd, _recv_command
         self._zlib_stream = zlib.decompressobj()
