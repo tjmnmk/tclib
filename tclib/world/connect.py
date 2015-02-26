@@ -40,10 +40,14 @@ class WorldConnect(threading.Thread):
         self._port = port
         self._world = world
         
-        if self._ver >= EXPANSION_WOTLK:
-            self._crypto = Crypto_WOTLK(S_hash)
+        if self._ver >= EXPANSION_PANDA:
+            self._crypto = CryptoPANDA(S_hash)
+        elif self._ver == EXPANSION_CATA:
+            self._crypto = CryptoCATA(S_hash)
+        elif self._ver == EXPANSION_WOTLK:
+            self._crypto = CryptoWOTLK(S_hash)
         elif self._ver == EXPANSION_TBC:
-            self._crypto = Crypto_TBC(S_hash)
+            self._crypto = CryptoTBC(S_hash)
         else:
             self._crypto = Crypto_VANILLA(S_hash)
         self._recv_buff = "" # _recv_to_buff; _recv_command

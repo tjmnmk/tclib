@@ -12,9 +12,11 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 import binascii
 import threading
 
+
 from Crypto.Hash import SHA, HMAC
 from Crypto.Cipher import ARC4
 from tclib.shared.common import *
+
 
 class CryptoPrototype(object):
     def __init__(self, S_hash):
@@ -62,8 +64,9 @@ class CryptoPrototype(object):
         """
         
         raise NotImplementedError()
+     
         
-class Crypto_WOTLK(CryptoPrototype):
+class CryptoWOTLK(CryptoPrototype):
     def __init__(self, S_hash):
         """
         Parameters
@@ -130,8 +133,17 @@ class Crypto_WOTLK(CryptoPrototype):
     _DECRYPTION_KEY = "\xCC\x98\xAE\x04\xE8\x97\xEA\xCA\x12\xDD\xC0\x93\x42\x91\x53\x57"
     _ENCRYPTION_KEY = "\xC2\xB3\x72\x3C\xC6\xAE\xD9\xB5\x34\x3C\x53\xEE\x2F\x43\x67\xCE"
     
+
+class CryptoCATA(CryptoWOTLK):
+    pass
+
+
+class CryptoPANDA(CryptoWOTLK):
+    _DECRYPTION_KEY = "\x08\xF1\x95\x9F\x47\xE5\xD2\xDB\xA1\x3D\x77\x8F\x3F\x3E\xE7\x00"
+    _ENCRYPTION_KEY = "\x40\xAA\xD3\x92\x26\x71\x43\x47\x3A\x31\x08\xA6\xE7\xDC\x98\x2A"
     
-class Crypto_VANILLA(CryptoPrototype):
+    
+class CryptoVANILLA(CryptoPrototype):
     def __init__(self, S_hash):
         CryptoPrototype.__init__(self, S_hash)
         
@@ -167,10 +179,10 @@ class Crypto_VANILLA(CryptoPrototype):
         return encrypted_data
     
     
-class Crypto_TBC(Crypto_VANILLA, CryptoPrototype):
+class CryptoTBC(CryptoVANILLA, CryptoPrototype):
     def __init__(self, S_hash):
         CryptoPrototype.__init__(self, S_hash)
-        Crypto_VANILLA.__init__(self, S_hash)
+        CryptoVANILLA.__init__(self, S_hash)
         
         hash_i = HMAC.new(self._RECV_SEED, digestmod = SHA)
         hash_i.update(S_hash)
@@ -179,22 +191,23 @@ class Crypto_TBC(Crypto_VANILLA, CryptoPrototype):
     _RECV_SEED = "\x38\xA7\x83\x15\xF8\x92\x25\x30\x71\x98\x67\xB1\x8C\x04\xE2\xAA"
     
     
-class Crypto_WOTLKTest(unittest.TestCase):
+class CryptoWOTLKTest(unittest.TestCase):
     def test_encrypt(self):
-        ci = Crypto_WOTLK(self.S_hash)
+        ci = CryptoWOTLK(self.S_hash)
         ci.encrypt("init")
         encrypted_data = ci.encrypt("test")
         encrypted_data_e = "\x2b\x01\x16\x93"
         self.assertEqual(encrypted_data, encrypted_data_e)
         
     def test_decrypt(self):
-        ci = Crypto_WOTLK(self.S_hash)
+        ci = CryptoWOTLK(self.S_hash)
         ci.decrypt("\x44\x55\x66")
         decrypted_data = ci.decrypt("\x11\x55\x77\x11")
         decrypted_data_e = "\x16\xe6\x82\x02"
         self.assertEqual(decrypted_data, decrypted_data_e)
 
     S_hash = "\x0a\xed\x8e\xb3\x4f\x8d\xe0\x1f\x2d\xdf\x4f\xba\x1b\x6a\x8c\xd8\xe9\xb6\xd0\x40\x2a\xd7\x9c\x3e\xb5\x74\x01\xf8\xba\x46\x26\x6e\xb3\x44\xc4\xe1\xce\xb7\xa5\xf0"
+    
     
 if __name__ == '__main__':
     unittest.main()
