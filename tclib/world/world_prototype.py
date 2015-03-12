@@ -9,8 +9,13 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from tclib.shared.common import *
 from tclib.shared.const import *
+
+
+class UnknownPlayer_SMP(object):
+    pass
 
 
 class WorldPrototype(object):  
@@ -21,10 +26,10 @@ class WorldPrototype(object):
     def _send(self, cmd, buff, correct_opcode = True):
         raise NotImplementedError()
     
-    def get_player(self, guid, timeout = 20, default = "UnknownPlayer()"):
+    def get_player(self, guid, timeout = 20, default = UnknownPlayer_SMP):
         raise NotImplementedError()
     
-    def get_player_name(self, guid, timeout = 20, default = "UnknownPlayer()"):
+    def get_player_name(self, guid, timeout = 20, default = UnknownPlayer_SMP):
         raise NotImplementedError()
     
     def cache_player(self, guid):
