@@ -27,11 +27,11 @@ def opcode_translate_wotlk_cata(wotlk_opcode):
     
     Raises
     ------
-    OPCODENotImplementedError
+    CODENotImplementedError
     """
     cata_opcode = WOTLK_CATA_OPCODES_TABLE.get(wotlk_opcode)
     if cata_opcode == None:
-        raise OPCODENotImplementedError("OPCODE %d is not implemented in cata" % wotlk_opcode)
+        raise CODENotImplementedError("OPCODE %d is not implemented in cata" % wotlk_opcode)
     return cata_opcode
 
     
@@ -47,12 +47,12 @@ def opcode_translate_cata_wotlk(cata_opcode):
     
     Raises
     ------
-    OPCODENotImplementedError
+    CODENotImplementedError
     """
     
     wotlk_opcode = CATA_WOTLK_OPCODES_TABLE.get(cata_opcode)
     if wotlk_opcode == None:
-        raise OPCODENotImplementedError("OPCODE %d is not implemented in wotlk" % cata_opcode)
+        raise CODENotImplementedError("OPCODE %d is not implemented in wotlk" % cata_opcode)
     return wotlk_opcode
 
 
@@ -109,12 +109,12 @@ def msg_type_translate_wotlk_cata(wotlk_msg_type):
     
     Raises
     ------
-    OPCODENotImplementedError
+    CODENotImplementedError
     """
     
     cata_opcode = WOTLK_CATA_MSG_TYPE_TABLE.get(wotlk_msg_type)
     if cata_opcode == None:
-        raise OPCODENotImplementedError("MSG TYPE %d is not implemented in cata" % cata_opcode)
+        raise CODENotImplementedError("MSG TYPE %d is not implemented in cata" % cata_opcode)
     return cata_opcode
 
 
@@ -130,12 +130,12 @@ def msg_type_translate_wotlk_vanilla(wotlk_msg_type):
     
     Raises
     ------
-    OPCODENotImplementedError
+    CODENotImplementedError
     """
     
     vanilla = WOTLK_VANILLA_MSG_TYPE_TABLE.get(wotlk_msg_type)
     if vanilla == None:
-        raise OPCODENotImplementedError("MSG TYPE %d is not implemented in vanilla" % vanilla)
+        raise CODENotImplementedError("MSG TYPE %d is not implemented in vanilla" % vanilla)
     return vanilla
 
 
@@ -165,12 +165,12 @@ def ge_translate_wotlk_vanilla(wotlk_ge):
     
     Raises
     ------
-    OPCODENotImplementedError
+    CODENotImplementedError
     """
     
     vanilla = WOTLK_VANILLA_GE_TABLE.get(wotlk_ge)
     if vanilla == None:
-        raise OPCODENotImplementedError("GE %d is not implemented in vanilla" % vanilla)
+        raise CODENotImplementedError("GE %d is not implemented in vanilla" % vanilla)
     return vanilla
 
 
@@ -186,12 +186,12 @@ def ge_translate_vanilla_wotlk(vanilla_ge):
     
     Raises
     ------
-    OPCODENotImplementedError
+    CODENotImplementedError
     """
     
     wotlk = VANILLA_WOTLK_GE_TABLE.get(vanilla_ge)
     if wotlk == None:
-        raise OPCODENotImplementedError("GE %d is not implemented in vanilla" % wotlk)
+        raise CODENotImplementedError("GE %d is not implemented in vanilla" % wotlk)
     return wotlk
 
 

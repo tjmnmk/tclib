@@ -129,7 +129,7 @@ class World(threading.Thread,
             if self._ver >= EXPANSION_CATA:
                 try:
                     cmd = opcode_translate_cata_wotlk(cmd)
-                except OPCODENotImplementedError:
+                except CODENotImplementedError:
                     continue
 
             handler, required_flags = WORLD_HANDLERS.get(cmd, (None, None))

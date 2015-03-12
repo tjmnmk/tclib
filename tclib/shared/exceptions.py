@@ -21,7 +21,7 @@ class LogonProofError(Exception):
     def __str__(self):
         return self.value
 
-class OPCODENotImplementedError(Exception):
+class CODENotImplementedError(Exception):
     pass
 
 class StreamBrokenError(Exception):
