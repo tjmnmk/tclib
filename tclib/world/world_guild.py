@@ -11,6 +11,8 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 
 from tclib.shared.bytebuff import *
 from tclib.world.world_prototype import *
+from tclib.shared.const import *
+from tclib.shared.opcodes_translate import *
 
 class WorldGuild(WorldPrototype):
     def __init__(self):
@@ -41,6 +43,8 @@ class WorldGuild(WorldPrototype):
         """
         
         event = buff.get("B")
+        if self._ver <= EXPANSION_TBC:
+            event = ge_translate_vanilla_wotlk(event)
         count = buff.get("B")
         if event in (GE_SIGNED_ON, GE_SIGNED_OFF):
             if count != 1:
