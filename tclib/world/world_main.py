@@ -353,7 +353,7 @@ class World(threading.Thread,
         
         self._send_name_query(guid)
         
-    def get_player(self, guid, timeout = NAME_QUERY_TIMEOUT, default = "UnknownPlayer()"):
+    def get_player(self, guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP):
         """
         Get player info for player with given guid.
         
@@ -379,11 +379,11 @@ class World(threading.Thread,
             player = self._player_cache.get_by_guid(guid)
             if player:
                 return player
-        if default == "UnknownPlayer()":
+        if default == UnknownPlayer_SMP:
             return UnknownPlayer()
         return default
         
-    def get_player_name(self, guid, timeout = NAME_QUERY_TIMEOUT, default = "UnknownPlayer()"):
+    def get_player_name(self, guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP):
         """
         Get player name for player with given guid.
         
@@ -398,7 +398,7 @@ class World(threading.Thread,
         name: str
         """
         
-        return self.get_player(guid, timeout = NAME_QUERY_TIMEOUT, default = "UnknownPlayer()").name
+        return self.get_player(guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP).name
 
     def _handle_auth_response(self, cmd, buff):
         """

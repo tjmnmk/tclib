@@ -11,6 +11,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 
 from tclib.shared.common import *
 
+
 class Player(object):
     guid = None
     name = None
@@ -104,6 +105,7 @@ class Player(object):
                  "declined"
                  )
     
+    
 class UnknownPlayer(Player):
     def __init__(self):
         Player.__init__(self)
@@ -131,6 +133,7 @@ class UnknownPlayer(Player):
         self.pet_level =         1
         self.pet_familyid =      0
     
+    
 class PlayerCache(dict):
     def __init__(self):
         dict.__init__(self)
@@ -154,6 +157,7 @@ class PlayerCache(dict):
             if v.name == name:
                 return v
         return default
+    
     
 class RealmTest(unittest.TestCase):
     def test_all(self):
