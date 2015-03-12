@@ -72,7 +72,7 @@ def opcode_translate_wotlk_panda(wotlk_opcode):
     """
     panda_opcode = WOTLK_PANDA_OPCODES_TABLE.get(wotlk_opcode)
     if panda_opcode == None:
-        raise OPCODENotImplementedError("OPCODE %d is not implemented in cata" % wotlk_opcode)
+        raise CODENotImplementedError("OPCODE %d is not implemented in cata" % wotlk_opcode)
     return panda_opcode
 
     
@@ -93,7 +93,7 @@ def opcode_translate_panda_wotlk(panda_opcode):
     
     panda_opcode = PANDA_WOTLK_OPCODES_TABLE.get(panda_opcode)
     if panda_opcode == None:
-        raise OPCODENotImplementedError("OPCODE %d is not implemented in wotlk" % panda_opcode)
+        raise CODENotImplementedError("OPCODE %d is not implemented in wotlk" % panda_opcode)
     return panda_opcode
 
 

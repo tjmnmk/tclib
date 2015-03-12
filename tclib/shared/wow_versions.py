@@ -9,9 +9,11 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from tclib.shared.common import *
 from tclib.shared.exceptions import *
 import unittest
+
 
 class WoWVersions(object):
     def __init__(self, build = None, version = None, expansion = None):
@@ -202,6 +204,7 @@ class WoWVersions(object):
     
     expansions_r = reverse_dict(expansions)
     
+    
 class WoWVersionsTest(unittest.TestCase):
     def setUp(self):
         self._build = 12340
@@ -238,6 +241,7 @@ class WoWVersionsTest(unittest.TestCase):
         ver = WoWVersions()
         ver.set_by_versionstring(self._version)
         self.check(ver)
+
 
 if __name__ == '__main__':
     unittest.main()

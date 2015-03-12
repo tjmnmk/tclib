@@ -9,11 +9,13 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from Crypto.Hash import SHA
 from Crypto.Random import random as c_random
 from tclib.shared.common import *
 import logging
 import binascii
+
 
 def srp6a(acc_name, acc_password, B_byte, g, N_byte, s_byte):
     """
@@ -114,6 +116,7 @@ def srp6a(acc_name, acc_password, B_byte, g, N_byte, s_byte):
     
     return M1_byte, M2_byte, A_byte, crc_hash, S_hash_byte
 
+
 class Srp6aTest(unittest.TestCase):
     def setUp(self):
         c_random.getrandbits = self.fake_random
@@ -146,6 +149,7 @@ class Srp6aTest(unittest.TestCase):
         self.assertEqual(A, A_e)
         self.assertEqual(crc_hash, crc_hash_e)
         self.assertEqual(S_hash, S_hash_e)
+
 
 if __name__ == '__main__':
     unittest.main()

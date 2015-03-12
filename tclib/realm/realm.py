@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 import struct, socket, errno
 import os
 
@@ -16,7 +17,9 @@ from tclib.shared.bytebuff import bytebuff
 from tclib.shared.common import *
 from srp6a import *
 
+
 NETWORK_SLEEP = 0.1
+
 
 class Realm(threading.Thread):
     def __init__(self, acc_name, acc_password, host, port, ver):
@@ -392,6 +395,7 @@ class Realm(threading.Thread):
         logging.getLogger("tclib").info("Realms: %s", self._realms)
         self.realm_list_done = True
 
+
 " PRESUNOUT !!!!!!!!!!!!!!!!!!!!!!!! "
 class RealmTest(unittest.TestCase):
     def setUp(self):
@@ -408,5 +412,7 @@ class RealmTest(unittest.TestCase):
         ri.join()
         ri.err()
 
+
 if __name__ == '__main__':
     unittest.main()
+    

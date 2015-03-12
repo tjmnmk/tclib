@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 import zlib
 import logging
 import errno
@@ -17,7 +18,9 @@ from tclib.shared.bytebuff import *
 from tclib.shared.opcodes_translate import *
 from crypto import *
 
+
 NETWORK_LOOP_SLEEP = 0.2      
+
 
 class WorldConnect(threading.Thread):
     def __init__(self, world, host, port, acc_name, S_hash, ver):

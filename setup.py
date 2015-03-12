@@ -9,7 +9,10 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from distutils.core import setup
+
+
 setup(
     name = "tclib",
     packages = ["tclib", "tclib.world", "tclib.shared", "tclib.shared.modules", "tclib.realm"],

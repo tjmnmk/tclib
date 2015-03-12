@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 import copy
 from Crypto.Hash import SHA
 from Crypto.Random import random as c_random
@@ -27,14 +28,17 @@ from tclib.world.world_misc import *
 from tclib.world.world_prototype import *
 from tclib.shared.opcodes_translate import *
 
+
 RECV_LOOP_SLEEP = 0.2
 WAIT_FUNC_SLEEP = 0.2
 WAIT_FUNC_DEFAULT_TIMEOUT = 60
 NAME_QUERY_TIMEOUT = 20
 
+
 class NothingToReturn(object):
     def __init__(self):
         raise NotImplementedError
+
 
 class World(threading.Thread,
             WorldChannel,
@@ -857,6 +861,7 @@ class World(threading.Thread,
 
         if self._err:
             raise self._err
+
 
 # CMD : (HANDLER, REQUIRED_FLAGS)        
 WORLD_HANDLERS = {

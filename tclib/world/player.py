@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from tclib.shared.common import *
 
 
@@ -175,6 +176,7 @@ class RealmTest(unittest.TestCase):
         self.assertEqual(cache.get_by_guid(4568889), None)
         self.assertEqual(cache.get_by_name("xxx", "test"), "test")
         self.assertEqual(cache.get_by_name("xxx"), None)
+
 
 if __name__ == '__main__':
     unittest.main()

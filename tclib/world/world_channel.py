@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 import itertools
 
 from tclib.shared.common import *
@@ -16,6 +17,7 @@ from tclib.shared.bytebuff import *
 from tclib.world.world_prototype import *
 from tclib.world.player import *
 from tclib.shared.modules import monotonic_time
+
 
 class WorldChannel(WorldPrototype):
     def __init__(self):
@@ -216,7 +218,8 @@ class WorldChannel(WorldPrototype):
             self._unregister_channel(channel_name)
             
         return channel, channel_ret
-        
+
+      
 class Channel(object):
     """
     Attributes

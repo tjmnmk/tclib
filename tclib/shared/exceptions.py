@@ -9,11 +9,13 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 class LogonChallangeError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
         return str(self.value)
+       
         
 class LogonProofError(Exception):
     def __init__(self, value):
@@ -21,20 +23,26 @@ class LogonProofError(Exception):
     def __str__(self):
         return self.value
 
+
 class CODENotImplementedError(Exception):
     pass
+
 
 class StreamBrokenError(Exception):
     pass
 
+
 class CryptoError(Exception):
     pass
+
 
 class BadPlayer(Exception):
     pass
 
+
 class TimeoutError(Exception):
     pass
+
 
 class WoWVersionsError(Exception):
     pass

@@ -9,10 +9,12 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from tclib.shared.bytebuff import *
 from tclib.world.world_prototype import *
 from tclib.shared.const import *
 from tclib.shared.opcodes_translate import *
+
 
 class WorldGuild(WorldPrototype):
     def __init__(self):
