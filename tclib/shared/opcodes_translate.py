@@ -105,6 +105,49 @@ def msg_type_translate_vanilla_wotlk(vanilla_msg_type):
     
     return VANILLA_WOTLK_MSG_TYPE_TABLE.get(vanilla_msg_type)
 
+
+def ge_translate_wotlk_vanilla(wotlk_ge):
+    """
+    Parameters
+    ----------
+    wotlk_ge : int
+    
+    Returns
+    ----------
+    vanilla_ge : int
+    
+    Raises
+    ------
+    OPCODENotImplementedError
+    """
+    
+    vanilla = WOTLK_VANILLA_GE_TABLE.get(wotlk_ge)
+    if vanilla == None:
+        raise OPCODENotImplementedError("GE %d is not implemented in vanilla" % vanilla)
+    return vanilla
+
+
+def ge_translate_vanilla_wotlk(vanilla_ge):
+    """
+    Parameters
+    ----------
+    vanilla_ge : int
+    
+    Returns
+    ----------
+    wotlk_ge : int
+    
+    Raises
+    ------
+    OPCODENotImplementedError
+    """
+    
+    wotlk = VANILLA_WOTLK_GE_TABLE.get(vanilla_ge)
+    if wotlk == None:
+        raise OPCODENotImplementedError("GE %d is not implemented in vanilla" % wotlk)
+    return wotlk
+
+
 WOTLK_VANILLA_MSG_TYPE_TABLE = {
 CHAT_MSG_SYSTEM                 : VANILLA_CHAT_MSG_SYSTEM,
 CHAT_MSG_SAY                    : VANILLA_CHAT_MSG_SAY,
@@ -2734,4 +2777,53 @@ CHAT_MSG_OFFICER    :   CATA_CMSG_MESSAGECHAT_OFFICER,
 CHAT_MSG_YELL       :   CATA_CMSG_MESSAGECHAT_YELL,
 CHAT_MSG_WHISPER    :   CATA_CMSG_MESSAGECHAT_WHISPER,
 CHAT_MSG_CHANNEL    :   CATA_CMSG_MESSAGECHAT_CHANNEL,
+}
+
+WOTLK_VANILLA_GE_TABLE = \
+{
+GE_PROMOTION                    : VANILLA_GE_PROMOTION,
+GE_DEMOTION                     : VANILLA_GE_DEMOTION,
+GE_MOTD                         : VANILLA_GE_MOTD,
+GE_JOINED                       : VANILLA_GE_JOINED,
+GE_LEFT                         : VANILLA_GE_LEFT,
+GE_REMOVED                      : VANILLA_GE_REMOVED,
+GE_LEADER_IS                    : VANILLA_GE_LEADER_IS,
+GE_LEADER_CHANGED               : VANILLA_GE_LEADER_CHANGED,
+GE_DISBANDED                    : VANILLA_GE_DISBANDED,
+GE_UPDATE_RANK                  : VANILLA_GE_UPDATE_RANK,
+GE_CREATE_RANK                  : None,
+GE_DELETE_RANK                  : VANILLA_GE_DELETE_RANK,
+GE_RANK_ORDER_CHANGE            : None,
+GE_UNK                          : None,
+GE_SIGNED_ON                    : VANILLA_GE_SIGNED_ON,
+GE_SIGNED_OFF                   : VANILLA_GE_SIGNED_OFF,
+GE_BANKBAGSLOTS_CHANGED         : VANILLA_GE_BANKBAGSLOTS_CHANGED,
+GE_BANKTAB_PURCHASED            : VANILLA_GE_BANKTAB_PURCHASED,
+GE_BANKTAB_UPDATED              : VANILLA_GE_BANKTAB_UPDATED,
+GE_BANK_UPDATE_MONEY            : None,
+GE_BANK_TEXT_CHANGED            : VANILLA_GE_BANK_TEXT_CHANGED,
+}
+
+VANILLA_WOTLK_GE_TABLE = \
+{
+VANILLA_GE_PROMOTION                        : GE_PROMOTION,
+VANILLA_GE_DEMOTION                         : GE_DEMOTION,
+VANILLA_GE_MOTD                             : GE_MOTD,
+VANILLA_GE_JOINED                           : GE_JOINED,
+VANILLA_GE_LEFT                             : GE_LEFT,
+VANILLA_GE_REMOVED                          : GE_REMOVED,
+VANILLA_GE_LEADER_IS                        : GE_LEADER_IS,
+VANILLA_GE_LEADER_CHANGED                   : GE_LEADER_CHANGED,
+VANILLA_GE_DISBANDED                        : GE_DISBANDED,
+VANILLA_GE_TABARDCHANGE                     : None,
+VANILLA_GE_UPDATE_RANK                      : GE_UPDATE_RANK,
+VANILLA_GE_DELETE_RANK                      : GE_DELETE_RANK,
+VANILLA_GE_SIGNED_ON                        : GE_SIGNED_ON,
+VANILLA_GE_SIGNED_OFF                       : GE_SIGNED_OFF,
+VANILLA_GE_BANKBAGSLOTS_CHANGED             : GE_BANKBAGSLOTS_CHANGED,
+VANILLA_GE_BANKTAB_PURCHASED                : GE_BANKTAB_PURCHASED,
+VANILLA_GE_BANKTAB_UPDATED                  : GE_BANKTAB_UPDATED,
+VANILLA_GE_BANK_MONEY_SET                   : None,
+VANILLA_GE_BANK_TAB_AND_MONEY_UPDATED       : None,
+VANILLA_GE_BANK_TEXT_CHANGED                : GE_BANK_TEXT_CHANGED,
 }
