@@ -2982,28 +2982,28 @@ GE_BANK_MONEY_SET                   = 0x11
 GE_BANK_TAB_AND_MONEY_UPDATED       = 0x12
 GE_BANK_TEXT_CHANGED                = 0x13
 
-" WOTLK GUILD EVENTS "
-WOTLK_GE_PROMOTION                    = 0x01
-WOTLK_GE_DEMOTION                     = 0x02
-WOTLK_GE_MOTD                         = 0x03
-WOTLK_GE_JOINED                       = 0x04
-WOTLK_GE_LEFT                         = 0x05
-WOTLK_GE_REMOVED                      = 0x06
-WOTLK_GE_LEADER_IS                    = 0x07
-WOTLK_GE_LEADER_CHANGED               = 0x08
-WOTLK_GE_DISBANDED                    = 0x09
-WOTLK_GE_UPDATE_RANK                  = 0x0B
-WOTLK_GE_CREATE_RANK                  = 0x0C
-WOTLK_GE_DELETE_RANK                  = 0x0D
-WOTLK_GE_RANK_ORDER_CHANGE            = 0x0E
-WOTLK_GE_UNK                          = 0x0F
-WOTLK_GE_SIGNED_ON                    = 0x10
-WOTLK_GE_SIGNED_OFF                   = 0x11
-WOTLK_GE_GUILDBANKBAGSLOTS_CHANGED    = 0x12
-WOTLK_GE_BANKTAB_PURCHASED            = 0x13
-WOTLK_GE_BANKTAB_UPDATED              = 0x14
-WOTLK_GE_GUILDBANK_UPDATE_MONEY       = 0x15
-WOTLK_GE_GUILDBANK_TEXT_CHANGED       = 0x17
+" CATA GUILD EVENTS "
+CATA_GE_PROMOTION                    = 0x01
+CATA_GE_DEMOTION                     = 0x02
+CATA_GE_MOTD                         = 0x03
+CATA_GE_JOINED                       = 0x04
+CATA_GE_LEFT                         = 0x05
+CATA_GE_REMOVED                      = 0x06
+CATA_GE_LEADER_IS                    = 0x07
+CATA_GE_LEADER_CHANGED               = 0x08
+CATA_GE_DISBANDED                    = 0x09
+CATA_GE_UPDATE_RANK                  = 0x0B
+CATA_GE_CREATE_RANK                  = 0x0C
+CATA_GE_DELETE_RANK                  = 0x0D
+CATA_GE_RANK_ORDER_CHANGE            = 0x0E
+CATA_GE_UNK                          = 0x0F
+CATA_GE_SIGNED_ON                    = 0x10
+CATA_GE_SIGNED_OFF                   = 0x11
+CATA_GE_GUILDBANKBAGSLOTS_CHANGED    = 0x12
+CATA_GE_BANKTAB_PURCHASED            = 0x13
+CATA_GE_BANKTAB_UPDATED              = 0x14
+CATA_GE_GUILDBANK_UPDATE_MONEY       = 0x15
+CATA_GE_GUILDBANK_TEXT_CHANGED       = 0x17
 
 " World auth "
 AUTH_OK                                                = 12
