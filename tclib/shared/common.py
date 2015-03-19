@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 import array
 import unittest
 import string
@@ -22,6 +23,7 @@ import errno
 
 from tclib.shared.exceptions import *
 from tclib.shared.const import *
+
 
 def bytes_to_int(bytes_r, order):
     """
@@ -46,6 +48,7 @@ def bytes_to_int(bytes_r, order):
         bytes_r = reverse_string(bytes_r)
     
     return int(bytes_r.encode('hex'), 16)
+
 
 def int_to_bytes(num, length, order):
     """
@@ -79,6 +82,7 @@ def int_to_bytes(num, length, order):
         
     return bytes_r
 
+
 def reverse_string(x):
     """
     Reverse string; "abcd" => "dcba".
@@ -93,6 +97,7 @@ def reverse_string(x):
     """
     
     return x[::-1]
+
 
 def reverse_dict(dictionary):
     """
@@ -110,6 +115,7 @@ def reverse_dict(dictionary):
     
     return dict(zip(dictionary.values(),dictionary.keys()))
 
+
 def is_printable(str_r):
     """ 
     Return true if string is printable
@@ -124,6 +130,7 @@ def is_printable(str_r):
     """
 
     return all(c in string.printable for c in str_r)
+
 
 @property
 def NotImplementedVar(self):
@@ -140,6 +147,7 @@ def NotImplementedVar(self):
 
     raise NotImplementedError
 
+
 def int_bitswap(value, length_in_bits):
     """ 
     Swap bits in int
@@ -155,6 +163,7 @@ def int_bitswap(value, length_in_bits):
     """
     
     return int(bin(value)[2:].zfill(length_in_bits)[::-1], 2)
+
 
 def int_get_bit(value, pos):
     """
@@ -175,8 +184,10 @@ def int_get_bit(value, pos):
     bit = (value >> pos) % 2
     return bit
 
+
 def int_numof_1_bit(value):
     return bin(value)[2:].count("1")
+
 
 class CommonTest(unittest.TestCase):
     def setUp(self):

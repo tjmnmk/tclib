@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 import zlib
 import logging
 import errno
@@ -17,7 +18,9 @@ from tclib.shared.bytebuff import *
 from tclib.shared.opcodes_translate import *
 from crypto import *
 
+
 NETWORK_LOOP_SLEEP = 0.2      
+
 
 class WorldConnect(threading.Thread):
     def __init__(self, world, host, port, acc_name, S_hash, ver):
@@ -40,12 +43,16 @@ class WorldConnect(threading.Thread):
         self._port = port
         self._world = world
         
-        if self._ver >= EXPANSION_WOTLK:
-            self._crypto = Crypto_WOTLK(S_hash)
+        if self._ver >= EXPANSION_PANDA:
+            self._crypto = CryptoPANDA(S_hash)
+        elif self._ver == EXPANSION_CATA:
+            self._crypto = CryptoCATA(S_hash)
+        elif self._ver == EXPANSION_WOTLK:
+            self._crypto = CryptoWOTLK(S_hash)
         elif self._ver == EXPANSION_TBC:
-            self._crypto = Crypto_TBC(S_hash)
+            self._crypto = CryptoTBC(S_hash)
         else:
-            self._crypto = Crypto_VANILLA(S_hash)
+            self._crypto = CryptoVANILLA(S_hash)
         self._recv_buff = "" # _recv_to_buff; _recv_command
         self._decrypted_header = () # size; cmd, _recv_command
         self._zlib_stream = zlib.decompressobj()

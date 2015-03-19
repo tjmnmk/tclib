@@ -9,9 +9,12 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from tclib.shared.common import *
 
+
 CALLBACK_QUEUE_TIMEOUT = 0.1
+
 
 class Callback(threading.Thread):
     def __init__(self):

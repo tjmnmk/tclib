@@ -9,7 +9,9 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 from tclib.shared.common import *
+
 
 class Player(object):
     guid = None
@@ -104,6 +106,7 @@ class Player(object):
                  "declined"
                  )
     
+    
 class UnknownPlayer(Player):
     def __init__(self):
         Player.__init__(self)
@@ -131,6 +134,7 @@ class UnknownPlayer(Player):
         self.pet_level =         1
         self.pet_familyid =      0
     
+    
 class PlayerCache(dict):
     def __init__(self):
         dict.__init__(self)
@@ -155,6 +159,7 @@ class PlayerCache(dict):
                 return v
         return default
     
+    
 class RealmTest(unittest.TestCase):
     def test_all(self):
         cache = PlayerCache()
@@ -171,6 +176,7 @@ class RealmTest(unittest.TestCase):
         self.assertEqual(cache.get_by_guid(4568889), None)
         self.assertEqual(cache.get_by_name("xxx", "test"), "test")
         self.assertEqual(cache.get_by_name("xxx"), None)
+
 
 if __name__ == '__main__':
     unittest.main()

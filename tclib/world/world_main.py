@@ -9,6 +9,7 @@ this stuff is worth it, you can buy me a beer in return Adam Bambuch
 ---------------------------------------------------------------------------------
 """
 
+
 import copy
 from Crypto.Hash import SHA
 from Crypto.Random import random as c_random
@@ -27,14 +28,17 @@ from tclib.world.world_misc import *
 from tclib.world.world_prototype import *
 from tclib.shared.opcodes_translate import *
 
+
 RECV_LOOP_SLEEP = 0.2
 WAIT_FUNC_SLEEP = 0.2
 WAIT_FUNC_DEFAULT_TIMEOUT = 60
 NAME_QUERY_TIMEOUT = 20
 
+
 class NothingToReturn(object):
     def __init__(self):
         raise NotImplementedError
+
 
 class World(threading.Thread,
             WorldChannel,
@@ -129,7 +133,7 @@ class World(threading.Thread,
             if self._ver >= EXPANSION_CATA:
                 try:
                     cmd = opcode_translate_cata_wotlk(cmd)
-                except OPCODENotImplementedError:
+                except CODENotImplementedError:
                     continue
 
             handler, required_flags = WORLD_HANDLERS.get(cmd, (None, None))
@@ -172,7 +176,12 @@ class World(threading.Thread,
             some crypto shit
         """
         
-        if self._ver >= EXPANSION_CATA:
+        if self._ver == EXPANSION_PANDA:
+            buff.skip(2)
+            buff.skip(8 * 4)
+            buff.skip(1)
+            self._server_seed = buff.get("4s")
+        if self._ver == EXPANSION_CATA:
             seed1 = buff.get("16s")
             seed2 = buff.get("16s")
             self._server_seed = buff.get("4s")
@@ -199,7 +208,41 @@ class World(threading.Thread,
         client_seed = int_to_bytes(c_random.getrandbits(4*8), 4, "little")
         K = SHA.new(self._acc_name + "\0" * 4 + client_seed + self._server_seed + self._S_hash).digest()
         
-        if self._ver >= EXPANSION_CATA:
+        if self._ver == EXPANSION_PANDA:
+            buff.add_zeros(4)
+            buff.add("s", K[14])
+            buff.add("s", K[8])
+            buff.add_zeros(4)
+            buff.add("s", K[10])
+            buff.add("s", K[19])
+            buff.add("s", K[16])
+            buff.add("s", K[13])
+            buff.add("s", K[4])
+            buff.add_zeros(1)
+            buff.add("s", K[9])
+            buff.add("s", K[0])
+            buff.add("4s", client_seed)
+            buff.add("s", K[5])
+            buff.add("s", K[2])
+            buff.add("H", self._ver.get_build())
+            buff.add("s", K[12])
+            buff.add_zeros(4)
+            buff.add("s", K[18])
+            buff.add("s", K[17])
+            buff.add("s", K[11])
+            buff.add_zeros(8)
+            buff.add("s", K[7])
+            buff.add("s", K[1])
+            buff.add("s", K[3])
+            buff.add_zeros(1)
+            buff.add("s", K[6])
+            buff.add_zeros(4)
+            buff.add("s", K[15])
+            buff.add_zeros(4)
+            buff.add("13t", len(self._acc_name))
+            buff.fill_byte()
+            buff.add("k", self._acc_name)
+        elif self._ver == EXPANSION_CATA:
             buff.add_zeros(9)
             buff.add("s", K[10])
             buff.add("s", K[18])
@@ -291,7 +334,8 @@ class World(threading.Thread,
             player = Player()
             player.guid = guid
             player.name = buff.get("S")
-            player.realm = buff.get("S")
+            if self._ver <= EXPANSION_WOTLK:
+                player.realm = buff.get("S")
             if self._ver >= EXPANSION_WOTLK:
                 player.race = buff.get("B")
                 player.gender = buff.get("B")
@@ -313,7 +357,7 @@ class World(threading.Thread,
         
         self._send_name_query(guid)
         
-    def get_player(self, guid, timeout = NAME_QUERY_TIMEOUT, default = "UnknownPlayer()"):
+    def get_player(self, guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP):
         """
         Get player info for player with given guid.
         
@@ -339,11 +383,11 @@ class World(threading.Thread,
             player = self._player_cache.get_by_guid(guid)
             if player:
                 return player
-        if default == "UnknownPlayer()":
+        if default == UnknownPlayer_SMP:
             return UnknownPlayer()
         return default
         
-    def get_player_name(self, guid, timeout = NAME_QUERY_TIMEOUT, default = "UnknownPlayer()"):
+    def get_player_name(self, guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP):
         """
         Get player name for player with given guid.
         
@@ -358,7 +402,7 @@ class World(threading.Thread,
         name: str
         """
         
-        return self.get_player(guid, timeout = NAME_QUERY_TIMEOUT, default = "UnknownPlayer()").name
+        return self.get_player(guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP).name
 
     def _handle_auth_response(self, cmd, buff):
         """
@@ -423,9 +467,12 @@ class World(threading.Thread,
             return 0
         
         if self._ver >= EXPANSION_CATA:
-            buff.skip(3)
             try:
-                num_of_chars = buff.get("17t")
+                if self._ver == EXPANSION_CATA:
+                    buff.skip(3)
+                    num_of_chars = buff.get("17t")
+                else:
+                    num_of_chars = buff.get("16t")
             except IndexError: #hotfix, rewrite
                 self._my_players = []
                 self._char_enum_done = True
@@ -439,71 +486,135 @@ class World(threading.Thread,
                 guid_to_read = []
                 guild_guid_to_read = []
                 name_len = 0
-                if buff.get_bit(): guid_to_read.append(3)
-                if buff.get_bit(): guild_guid_to_read.append(1)
-                if buff.get_bit(): guild_guid_to_read.append(7)
-                if buff.get_bit(): guild_guid_to_read.append(2)
-                name_len = buff.get("7t")
-                if buff.get_bit(): guid_to_read.append(4)
-                if buff.get_bit(): guid_to_read.append(7)
-                if buff.get_bit(): guild_guid_to_read.append(3)
-                if buff.get_bit(): guid_to_read.append(5)
-                if buff.get_bit(): guild_guid_to_read.append(6)
-                if buff.get_bit(): guid_to_read.append(1)
-                if buff.get_bit(): guild_guid_to_read.append(5)
-                if buff.get_bit(): guild_guid_to_read.append(4)
-                buff.skip_bits(1)
-                if buff.get_bit(): guid_to_read.append(0)
-                if buff.get_bit(): guid_to_read.append(2)
-                if buff.get_bit(): guid_to_read.append(6)
-                if buff.get_bit(): guild_guid_to_read.append(0)
+                if self._ver == EXPANSION_CATA:
+                    if buff.get_bit(): guid_to_read.append(3)
+                    if buff.get_bit(): guild_guid_to_read.append(1)
+                    if buff.get_bit(): guild_guid_to_read.append(7)
+                    if buff.get_bit(): guild_guid_to_read.append(2)
+                    name_len = buff.get("7t")
+                    if buff.get_bit(): guid_to_read.append(4)
+                    if buff.get_bit(): guid_to_read.append(7)
+                    if buff.get_bit(): guild_guid_to_read.append(3)
+                    if buff.get_bit(): guid_to_read.append(5)
+                    if buff.get_bit(): guild_guid_to_read.append(6)
+                    if buff.get_bit(): guid_to_read.append(1)
+                    if buff.get_bit(): guild_guid_to_read.append(5)
+                    if buff.get_bit(): guild_guid_to_read.append(4)
+                    buff.skip_bits(1)
+                    if buff.get_bit(): guid_to_read.append(0)
+                    if buff.get_bit(): guid_to_read.append(2)
+                    if buff.get_bit(): guid_to_read.append(6)
+                    if buff.get_bit(): guild_guid_to_read.append(0)
+                else:
+                    if buff.get_bit(): guild_guid_to_read.append(3)
+                    buff.skip_bits(1) # first login
+                    if buff.get_bit(): guid_to_read.append(6)
+                    if buff.get_bit(): guild_guid_to_read.append(1)
+                    if buff.get_bit(): guid_to_read.append(1)
+                    if buff.get_bit(): guid_to_read.append(5)
+                    if buff.get_bit(): guild_guid_to_read.append(6)
+                    if buff.get_bit(): guid_to_read.append(7)
+                    if buff.get_bit(): guid_to_read.append(0)
+                    if buff.get_bit(): guild_guid_to_read.append(5)
+                    if buff.get_bit(): guid_to_read.append(2)
+                    name_len = buff.get("6t")
+                    if buff.get_bit(): guid_to_read.append(4)
+                    if buff.get_bit(): guild_guid_to_read.append(4)
+                    if buff.get_bit(): guild_guid_to_read.append(2)
+                    if buff.get_bit(): guid_to_read.append(3)
+                    if buff.get_bit(): guild_guid_to_read.append(0)
+                    if buff.get_bit(): guild_guid_to_read.append(7)
+                buff.left_bits()
                 player_packet_flags.append((guid_to_read, guild_guid_to_read, name_len))
-            buff.left_bits()
+            
+            if self._ver >= EXPANSION_PANDA:
+                buff.skip_bits(1)
+                buff.skip_bits(21)
+                buff.left_bits()
             
             for guid_to_read, guild_guid_to_read, name_len in player_packet_flags:
                 player = Player()
                 guid = 0
                 guild_guid = 0
-                player.game_class = buff.get("B")
-                buff.skip((4 + 4 + 1) * 23)
-                player.pet_familyid = buff.get("I")
-                guild_guid |= read_byte_if_needed(2, guild_guid_to_read, buff)
-                unk = buff.get("B")
-                player.hair_style = buff.get("B")
-                guild_guid |= read_byte_if_needed(3, guild_guid_to_read, buff)
-                player.pet_id = buff.get("I")
-                player.flags = buff.get("I")
-                player.hair_color = buff.get("B")
-                guid |= read_byte_if_needed(4, guid_to_read, buff)
-                player.map_id = buff.get("I")
-                guild_guid |= read_byte_if_needed(5, guild_guid_to_read, buff)
-                player.z = buff.get("f")
-                guild_guid |= read_byte_if_needed(6, guild_guid_to_read, buff)
-                player.pet_level = buff.get("I")
-                guid |= read_byte_if_needed(3, guid_to_read, buff)
-                player.y = buff.get("f")
-                unk2 = buff.get("I")
-                player.hair_facial = buff.get("B")
-                guid |= read_byte_if_needed(7, guid_to_read, buff)
-                player.gender = buff.get("B")
-                player.name = buff.get_raw(name_len)
-                player.face = buff.get("B")
-                guid |= read_byte_if_needed(0, guid_to_read, buff)
-                guid |= read_byte_if_needed(2, guid_to_read, buff)
-                guild_guid |= read_byte_if_needed(1, guild_guid_to_read, buff)
-                guild_guid |= read_byte_if_needed(7, guild_guid_to_read, buff)
-                player.x = buff.get("f")
-                player.skin = buff.get("B")
-                player.race = buff.get("B")
-                player.level = buff.get("B")
-                guid |= read_byte_if_needed(6, guid_to_read, buff)
-                guild_guid |= read_byte_if_needed(4, guild_guid_to_read, buff)
-                guild_guid |= read_byte_if_needed(0, guild_guid_to_read, buff)
-                guid |= read_byte_if_needed(5, guid_to_read, buff)
-                guid |= read_byte_if_needed(1, guid_to_read, buff)
-                player.zone_id = buff.get("I")
-                player.guid = guid
-                
+                if self._ver == EXPANSION_CATA:
+                    player.game_class = buff.get("B")
+                    buff.skip((4 + 4 + 1) * 23)
+                    player.pet_familyid = buff.get("I")
+                    guild_guid |= read_byte_if_needed(2, guild_guid_to_read, buff)
+                    buff.skip(1)
+                    player.hair_style = buff.get("B")
+                    guild_guid |= read_byte_if_needed(3, guild_guid_to_read, buff)
+                    player.pet_id = buff.get("I")
+                    player.flags = buff.get("I")
+                    player.hair_color = buff.get("B")
+                    guid |= read_byte_if_needed(4, guid_to_read, buff)
+                    player.map_id = buff.get("I")
+                    guild_guid |= read_byte_if_needed(5, guild_guid_to_read, buff)
+                    player.z = buff.get("f")
+                    guild_guid |= read_byte_if_needed(6, guild_guid_to_read, buff)
+                    player.pet_level = buff.get("I")
+                    guid |= read_byte_if_needed(3, guid_to_read, buff)
+                    player.y = buff.get("f")
+                    buff.skip(4)
+                    player.hair_facial = buff.get("B")
+                    guid |= read_byte_if_needed(7, guid_to_read, buff)
+                    player.gender = buff.get("B")
+                    player.name = buff.get_raw(name_len)
+                    player.face = buff.get("B")
+                    guid |= read_byte_if_needed(0, guid_to_read, buff)
+                    guid |= read_byte_if_needed(2, guid_to_read, buff)
+                    guild_guid |= read_byte_if_needed(1, guild_guid_to_read, buff)
+                    guild_guid |= read_byte_if_needed(7, guild_guid_to_read, buff)
+                    player.x = buff.get("f")
+                    player.skin = buff.get("B")
+                    player.race = buff.get("B")
+                    player.level = buff.get("B")
+                    guid |= read_byte_if_needed(6, guid_to_read, buff)
+                    guild_guid |= read_byte_if_needed(4, guild_guid_to_read, buff)
+                    guild_guid |= read_byte_if_needed(0, guild_guid_to_read, buff)
+                    guid |= read_byte_if_needed(5, guid_to_read, buff)
+                    guid |= read_byte_if_needed(1, guid_to_read, buff)
+                    player.zone_id = buff.get("I")
+                    player.guid = guid
+                else:
+                    player.skin = buff.get("B")
+                    guild_guid |= read_byte_if_needed(2, guild_guid_to_read, buff)
+                    guild_guid |= read_byte_if_needed(7, guild_guid_to_read, buff)
+                    player.pet_id = buff.get("I")
+                    player.name = buff.get_raw(name_len)
+                    buff.skip((4 + 4 + 1) * 23)
+                    guid |= read_byte_if_needed(4, guid_to_read, buff)
+                    guid |= read_byte_if_needed(6, guid_to_read, buff)
+                    player.level = buff.get("B")
+                    player.y = buff.get("f")
+                    player.x = buff.get("f")
+                    player.face = buff.get("B")
+                    guild_guid |= read_byte_if_needed(0, guild_guid_to_read, buff)
+                    buff.skip(1) # char order id
+                    player.zone_id = buff.get("I")
+                    guild_guid |= read_byte_if_needed(7, guild_guid_to_read, buff)
+                    player.flags = buff.get("I")
+                    player.map_id = buff.get("I")
+                    player.race = buff.get("B")
+                    player.z = buff.get("f")
+                    guild_guid |= read_byte_if_needed(1, guild_guid_to_read, buff)
+                    player.gender = buff.get("B")
+                    guid |= read_byte_if_needed(3, guid_to_read, buff)
+                    player.hair_color = buff.get("B")
+                    guild_guid |= read_byte_if_needed(5, guild_guid_to_read, buff)
+                    player.game_class = buff.get("B")
+                    guild_guid |= read_byte_if_needed(2, guild_guid_to_read, buff)
+                    guid |= read_byte_if_needed(1, guid_to_read, buff)
+                    buff.skip(4) # character customize change flags
+                    player.hair_facial = buff.get("B")
+                    guild_guid |= read_byte_if_needed(6, guild_guid_to_read, buff)
+                    guid |= read_byte_if_needed(0, guid_to_read, buff)
+                    player.hair_style = buff.get("B")
+                    guid |= read_byte_if_needed(5, guid_to_read, buff)
+                    player.pet_familyid = buff.get("I")
+                    guild_guid |= read_byte_if_needed(2, guild_guid_to_read, buff)
+                    player.pet_level = buff.get("I")
+                    guild_guid |= read_byte_if_needed(4, guild_guid_to_read, buff)
                 self._player_cache.add(player)
                 players.append(player)
         else:
@@ -569,13 +680,19 @@ class World(threading.Thread,
         buff = bytebuff()
         if self._ver >= EXPANSION_CATA:
             guid_packed = struct.pack("<Q", guid)
-            for i in (2, 3, 0, 6, 4, 5, 1, 7):
+            if self._ver >= EXPANSION_PANDA:
+                bits_order =  (1, 4, 7, 3, 2, 6, 5, 0)
+                bytes_order = (5, 1, 0, 6, 2, 4, 3, 7)
+            else:
+                bits_order = (2, 3, 0, 6, 4, 5, 1, 7)
+                bytes_order = (2, 7, 0, 3, 5, 6, 1, 4)
+            for i in bits_order:
                 if ord(guid_packed[i]):
                     buff.add_bit(1)
                 else:
                     buff.add_bit(0)
             
-            for i in (2, 7, 0, 3, 5, 6, 1, 4):
+            for i in bytes_order:
                 if ord(guid_packed[i]):
                     buff.add("B", ord(guid_packed[i]) ^ 1)   
         else:
@@ -657,8 +774,12 @@ class World(threading.Thread,
         
         buff = bytebuff()
         tick = (monotonic_time.monotonic_time() - self._client_start_time) * 1000
-        buff.add("I", time_sync_counter)
-        buff.add("I", tick)
+        if self._ver >= EXPANSION_PANDA:
+            buff.add("I", tick)
+            buff.add("I", time_sync_counter)
+        else:
+            buff.add("I", time_sync_counter)
+            buff.add("I", tick)
         self._send(CMSG_TIME_SYNC_RESP, buff)
         
     def login(self, player):
@@ -740,6 +861,7 @@ class World(threading.Thread,
 
         if self._err:
             raise self._err
+
 
 # CMD : (HANDLER, REQUIRED_FLAGS)        
 WORLD_HANDLERS = {
