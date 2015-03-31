@@ -181,7 +181,8 @@ class WoWVersions(object):
 
     __str__ = get_versionstring
     
-    versions = ( (17898, 5, 4, 7, ''),
+    versions = ( (18291, 5, 4, 8, '')
+                 (17898, 5, 4, 7, ''),
                  (17688, 5, 4, 2, 'hotfix1'),
                  (17658, 5, 4, 2, ''),
                  (17538, 5, 4, 1, ''),
