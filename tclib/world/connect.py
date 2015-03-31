@@ -152,7 +152,10 @@ class WorldConnect(threading.Thread):
             self._send("\x00\x2fWORLD OF WARCRAFT CONNECTION - CLIENT TO SERVER")
             buff = bytebuff(self._connection.recv(41, socket.MSG_WAITALL))
         else:
-            buff = bytebuff(self._connection.recv(44, socket.MSG_WAITALL))
+            if self._ver == EXPANSION_WOTLK:
+                buff = bytebuff(self._connection.recv(44, socket.MSG_WAITALL))
+            else:
+                buff = bytebuff(self._connection.recv(8, socket.MSG_WAITALL))
         size = buff.get(">H") # wotlk - 42, cata - 39; tbc - 6
         cmd = buff.get("H")
         if self._ver >= EXPANSION_CATA:
