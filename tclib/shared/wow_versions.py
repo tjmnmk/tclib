@@ -64,6 +64,9 @@ class WoWVersions(object):
         WoWVersionsError
         """
         
+        if version == "5.4.8":
+            version = "5.4.7" # wtf?
+        
         for i in self.versions:
             x = "%d.%d.%d%s" % i[1:]
             if x == version:
