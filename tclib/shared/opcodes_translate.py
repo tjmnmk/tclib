@@ -91,10 +91,10 @@ def opcode_translate_panda_wotlk(panda_opcode):
     OPCODENotImplementedError
     """
     
-    panda_opcode = PANDA_WOTLK_OPCODES_TABLE.get(panda_opcode)
+    wotlk_opcode = PANDA_WOTLK_OPCODES_TABLE.get(panda_opcode)
     if panda_opcode == None:
         raise CODENotImplementedError("OPCODE %d is not implemented in wotlk" % panda_opcode)
-    return panda_opcode
+    return wotlk_opcode
 
 
 def msg_type_translate_wotlk_cata(wotlk_msg_type):

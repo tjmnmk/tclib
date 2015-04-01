@@ -149,17 +149,24 @@ class WorldConnect(threading.Thread):
         # SMSG_AUTH_CHALLENGE
         if self._ver >= EXPANSION_CATA: #rewrite
             self._connection.recv(50, socket.MSG_WAITALL)
-            self._send("\x00\x2fWORLD OF WARCRAFT CONNECTION - CLIENT TO SERVER")
-            buff = bytebuff(self._connection.recv(41, socket.MSG_WAITALL))
-        else:
-            if self._ver == EXPANSION_WOTLK:
-                buff = bytebuff(self._connection.recv(44, socket.MSG_WAITALL))
+            if self._ver == EXPANSION_CATA:
+                self._send("\x00\x2fWORLD OF WARCRAFT CONNECTION - CLIENT TO SERVER")
             else:
-                buff = bytebuff(self._connection.recv(8, socket.MSG_WAITALL))
+                self._send("\x30\x00WORLD OF WARCRAFT CONNECTION - CLIENT TO SERVER\00")
+            buff = bytebuff(self._connection.recv(41, socket.MSG_WAITALL))
+        elif self._ver == EXPANSION_WOTLK:
+            buff = bytebuff(self._connection.recv(44, socket.MSG_WAITALL))
+        else:
+            buff = bytebuff(self._connection.recv(8, socket.MSG_WAITALL))
+        print len(buff.data)
         size = buff.get(">H") # wotlk - 42, cata - 39; tbc - 6
         cmd = buff.get("H")
-        if self._ver >= EXPANSION_CATA:
+        print cmd
+        if self._ver == EXPANSION_CATA:
             cmd = opcode_translate_cata_wotlk(cmd)
+        elif self._ver == EXPANSION_PANDA:
+            cmd = opcode_translate_panda_wotlk(cmd)
+        print cmd
         if cmd != SMSG_AUTH_CHALLENGE:
             raise StreamBrokenError()
         buff.cut()
