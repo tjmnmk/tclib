@@ -849,7 +849,7 @@ class World(threading.Thread,
             if self._login_verify_world_done:
                 break
             if start_time + timeout < monotonic_time.monotonic_time():
-                break
+                raise TimeoutError()
             time.sleep(WAIT_FUNC_SLEEP)
     
     def err(self):
