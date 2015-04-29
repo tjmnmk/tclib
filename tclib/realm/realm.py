@@ -334,14 +334,12 @@ class Realm(threading.Thread):
         if not self.logon_proof_done or self.realm_list_done:
             raise StreamBrokenError()
         
-        buff = bytebuff(self._recv("H"))
-        if self._ver >= EXPANSION_TBC:    
-            size = buff.get("H")
-        else:
-            size = buff.get("B")
+        buff = bytebuff(self._recv("H")) 
+        size = buff.get("H")
         if size < 6:
             raise StreamBrokenError()
         
+        print size
         buff = bytebuff(self._recv(size))
         
         buff.skip(4)
