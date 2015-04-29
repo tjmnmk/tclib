@@ -339,7 +339,6 @@ class Realm(threading.Thread):
         if size < 6:
             raise StreamBrokenError()
         
-        print size
         buff = bytebuff(self._recv(size))
         
         buff.skip(4)
