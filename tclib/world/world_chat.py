@@ -38,6 +38,7 @@ class WorldChat(WorldPrototype):
                          CHAT_MSG_WHISPER,
                          CHAT_MSG_CHANNEL
         msg : str
+            msg must be less than 256 characters
         to : str
             Required if msg_type is CHAT_MSG_WHISPER or CHAT_MSG_CHANNEL
             
@@ -45,7 +46,12 @@ class WorldChat(WorldPrototype):
         ----------
         NotImplementedError
             If msg_type is not implemented.
+        MessageIsTooLong
+            If len(msg) > 255
         """
+        
+        if len(msg) > 255:
+            raise MessageIsTooLong()
         
         if msg_type == CHAT_MSG_WHISPER and self._ver < EXPANSION_CATA:
             lang = LANG_GLOBAL
