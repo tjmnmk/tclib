@@ -236,9 +236,9 @@ class Realm(threading.Thread):
         
         if security_flag & 0x01:
             self._recv(20)
-        elif security_flag & 0x02:
+        if security_flag & 0x02:
             self._recv(12)
-        elif security_flag & 0x04:
+        if security_flag & 0x04:
             self._recv(1)
         
         self.logon_challange_done = True
