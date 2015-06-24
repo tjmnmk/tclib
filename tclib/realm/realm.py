@@ -367,9 +367,8 @@ class Realm(threading.Thread):
             try:
                 host = address.split(":")[0]
                 port = int(address.split(":")[1])
-            except KeyError, ValueError:
-                self._info("Stream broken")
-                self._die()
+            except (KeyError, ValueError):
+                raise StreamBrokenError()
                 
             population = buff.get("I")
             number_of_char = buff.get("B")
