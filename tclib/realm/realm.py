@@ -195,7 +195,7 @@ class Realm(threading.Thread):
         buff.add("I", timezone_bias)
         buff.add("I", ip)
         buff.add("B", acc_len)
-        buff.add("%ds" % acc_len, self._acc_name)
+        buff.add("k", self._acc_name)
         
         self._send_command(CMD_LOGON_CHALLANGE, buff.data)
         
@@ -236,9 +236,9 @@ class Realm(threading.Thread):
         
         if security_flag & 0x01:
             self._recv(20)
-        elif security_flag & 0x02:
+        if security_flag & 0x02:
             self._recv(12)
-        elif security_flag & 0x04:
+        if security_flag & 0x04:
             self._recv(1)
         
         self.logon_challange_done = True

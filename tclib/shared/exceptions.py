@@ -36,6 +36,10 @@ class CryptoError(Exception):
     pass
 
 
+class MessageIsTooLong(Exception):
+    pass
+
+
 class BadPlayer(Exception):
     pass
 

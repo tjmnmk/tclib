@@ -97,7 +97,7 @@ class WorldGuild(WorldPrototype):
         """
         
         if self._ver >= EXPANSION_CATA:
-            raise NotImplementedError # TODO: implement
+            return # TODO: implement
         
         buff = bytebuff()
         guild_id = buff.get("I")
