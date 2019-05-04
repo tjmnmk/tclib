@@ -15,8 +15,8 @@ class LogonChallangeError(Exception):
         self.value = value
     def __str__(self):
         return str(self.value)
-       
-        
+
+
 class LogonProofError(Exception):
     def __init__(self, value):
         self.value = value
@@ -50,3 +50,7 @@ class TimeoutError(Exception):
 
 class WoWVersionsError(Exception):
     pass
+
+class SendAuctionHelloFirst(Exception):
+    pass
+    

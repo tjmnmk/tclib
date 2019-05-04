@@ -26,6 +26,7 @@ from tclib.world.world_channel import *
 from tclib.world.world_chat import *
 from tclib.world.world_misc import *
 from tclib.world.world_prototype import *
+from tclib.world.world_auction import *
 from tclib.shared.opcodes_translate import *
 
 
@@ -45,6 +46,7 @@ class World(threading.Thread,
             WorldChat,
             WorldGuild,
             WorldMisc,
+            WorldAuction,
             WorldPrototype):
     """
     Attributes
@@ -52,7 +54,7 @@ class World(threading.Thread,
     callback : Callback
         See Callback class
     """
-    
+
     def __init__(self, host, port, acc_name, S_hash, ver, realm_id):
         """
         Parameters
@@ -64,18 +66,18 @@ class World(threading.Thread,
         ver : WoWVersions
         realm_id : int
         """
-        
+
         threading.Thread.__init__(self)
         WorldChannel.__init__(self)
         WorldChat.__init__(self)
         WorldGuild.__init__(self)
         WorldMisc.__init__(self)
-        
+
         self._acc_name = acc_name
         self._S_hash = S_hash
         self._ver = ver
         self._realm_id = realm_id
-                
+
         self.callback = Callback()
         self._ping_counter = 0
         self._my_players = []
@@ -83,19 +85,19 @@ class World(threading.Thread,
         self._client_start_time = monotonic_time.monotonic_time()
         self._server_seed = ""
         self._player_cache = PlayerCache()
-        
+
         self._char_enum_done = False
         self._login_verify_world_done = False
-        
+
         self._die = False
         self._err = None
-        
+
         self._world_connect = WorldConnect(self, host, port, acc_name, S_hash, ver)
-        
+
     def run(self):
         self.callback.start()
         self._world_connect.start()
-        
+
         try:
             self._worker()
         except StreamBrokenError as e:
@@ -110,22 +112,22 @@ class World(threading.Thread,
             self.callback.die()
             self._world_connect.join()
             self.callback.join()
-        
+
     def disconnect(self):
         """
         Disconnect
         """
-        
+
         self._die = True
         self.join()
-        
+
     def _worker(self):
         self._world_connect.err()
-        
+
         while 1:
             if self._die:
                 return
-            self._world_connect.err()           
+            self._world_connect.err()
             cmd, buff = self._world_connect.recv_msg()
             if cmd == None:
                 time.sleep(RECV_LOOP_SLEEP)
@@ -144,28 +146,28 @@ class World(threading.Thread,
                         self.callback.call(cmd, *ret)
                     except TypeError:
                         self.callback.call(cmd, ret)
-                
+
     def _send(self, cmd, buff = bytebuff(), correct_cmd = True):
         """
         Forward packet to WorldConnect.
-        
+
         Parameters
         ----------
         cmd : int
         buff : bytebuff
         correct_cmd : bool
         """
-        
+
         if self._ver >= EXPANSION_CATA and correct_cmd:
             cmd = opcode_translate_wotlk_cata(cmd)
         self._world_connect.send_msg(cmd, buff)
-                
+
     def _handle_auth_challange(self, cmd, buff):
         """
         Very first message! Called from WorldConnect.
-        
+
         SMSG_AUTH_CHALLENGE
-        
+
         Returns
         ----------
         self._server_seed : str
@@ -175,7 +177,7 @@ class World(threading.Thread,
         seed2 : str
             some crypto shit
         """
-        
+
         if self._ver == EXPANSION_PANDA:
             buff.skip(2)
             buff.skip(8 * 4)
@@ -195,11 +197,11 @@ class World(threading.Thread,
             self._server_seed = buff.get("4s")
             seed1 = None
             seed2 = None
-        
+
         self._send_auth_session()
-        
+
         return self._server_seed, seed1, seed2
-                
+
     def _send_auth_session(self):
         """
         CMSG_AUTH_SESSION
@@ -207,7 +209,7 @@ class World(threading.Thread,
         buff = bytebuff()
         client_seed = int_to_bytes(c_random.getrandbits(4*8), 4, "little")
         K = SHA.new(self._acc_name + "\0" * 4 + client_seed + self._server_seed + self._S_hash).digest()
-        
+
         if self._ver == EXPANSION_PANDA:
             buff.add_zeros(4)
             buff.add("s", K[14])
@@ -292,34 +294,34 @@ class World(threading.Thread,
             buff.add("S", self._acc_name)
             buff.add("4s", client_seed)
             buff.add("20s", K)
-        
+
         self._send(CMSG_AUTH_SESSION, buff)
 
     def _send_name_query(self, guid):
         """
         CMSG_NAME_QUERY
         """
-        
+
         buff = bytebuff()
         buff.add("Q", guid)
         self._send(CMSG_NAME_QUERY, buff)
-        
+
     def _handle_name_query_response(self, cmd, buff):
         """
         SMSG_NAME_QUERY_RESPONSE
-        
+
         Called from WorldConnect. Do not rename!
         Contain player info.
-               
+
         Parameters
         ----------
         buff : bytebuff
-        
+
         Returns
         ----------
         player : Player
         """
-        
+
         buff._position = 0
         if self._ver >= EXPANSION_WOTLK:
             guid = buff.get("G")
@@ -346,36 +348,36 @@ class World(threading.Thread,
                 player.game_class = buff.get("I")
             if self._ver >= EXPANSION_TBC:
                 player.declined = buff.get("B")
-        
+
         self._player_cache.add(player)
         self.callback.call(SMSG_NAME_QUERY_RESPONSE, player) # little hack, because called from WorldConnect return is not enough.
-        
+
     def cache_player(self, guid):
         """
         Just alias for _send_name_query
         """
-        
+
         self._send_name_query(guid)
-        
+
     def get_player(self, guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP):
         """
         Get player info for player with given guid.
-        
+
         Parameters
         ----------
         guid : int
         timeout : int
         default : object
-        
+
         Returns
         ----------
         player: Player
         """
-        
+
         player = self._player_cache.get_by_guid(guid)
         if player:
             return player
-        
+
         self._send_name_query(guid)
         num_of_loops = timeout / RECV_LOOP_SLEEP + 1
         for i in xrange(int(num_of_loops)):
@@ -386,30 +388,30 @@ class World(threading.Thread,
         if default == UnknownPlayer_SMP:
             return UnknownPlayer()
         return default
-        
+
     def get_player_name(self, guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP):
         """
         Get player name for player with given guid.
-        
+
         Parameters
         ----------
         guid : int
         timeout : int
         default : object
-        
+
         Returns
         ----------
         name: str
         """
-        
+
         return self.get_player(guid, timeout = NAME_QUERY_TIMEOUT, default = UnknownPlayer_SMP).name
 
     def _handle_auth_response(self, cmd, buff):
         """
         SMSG_AUTH_RESPONSE
-        
+
         .. todo:: implement queue len, etc.
-        
+
         Returns
         ----------
         err : int
@@ -438,34 +440,34 @@ class World(threading.Thread,
             AUTH_LOCKED_ENFORCED
         """
         #err = buff.get("B")
-        
+
         #if err == AUTH_OK:
         self._send_char_enum()
         #return err
-        
+
     def _send_char_enum(self):
         """
         CMSG_CHAR_ENUM
         """
 
         self._send(CMSG_CHAR_ENUM)
-        
+
     def _handle_char_enum(self, cmd, buff):
         """
         SMSG_CHAR_ENUM
-        
+
         Contain list of yours character and some info about them.
-        
+
         Returns
         ----------
         players : list of Players
         """
-        
+
         def read_byte_if_needed(byte, need, buff):
             if byte in need:
                 return (buff.get("B") ^ 1) << (byte * 8)
             return 0
-        
+
         if self._ver >= EXPANSION_CATA:
             buff.skip(3)
             try:
@@ -503,7 +505,7 @@ class World(threading.Thread,
                 if buff.get_bit(): guild_guid_to_read.append(0)
                 player_packet_flags.append((guid_to_read, guild_guid_to_read, name_len))
             buff.left_bits()
-            
+
             for guid_to_read, guild_guid_to_read, name_len in player_packet_flags:
                 player = Player()
                 guid = 0
@@ -547,7 +549,7 @@ class World(threading.Thread,
                 guid |= read_byte_if_needed(1, guid_to_read, buff)
                 player.zone_id = buff.get("I")
                 player.guid = guid
-                
+
                 self._player_cache.add(player)
                 players.append(player)
         else:
@@ -583,33 +585,33 @@ class World(threading.Thread,
                     buff.skip(180)
                 if self._ver == EXPANSION_VANILLA:
                     buff.skip(100)
-            
+
                 self._player_cache.add(player)
                 players.append(player)
-        
+
         self._my_players = players
         self._char_enum_done = True
         return players
-    
+
     def get_my_player(self):
         """
         Returns
         ----------
         player : Player
         """
-        
+
         assert(self._my_player != None)
         return self._my_player
-            
+
     def _send_player_login(self, guid):
         """
         CMSG_PLAYER_LOGIN
-        
+
         Parameters
         ----------
         guid : int
         """
-        
+
         buff = bytebuff()
         if self._ver >= EXPANSION_CATA:
             guid_packed = struct.pack("<Q", guid)
@@ -624,20 +626,20 @@ class World(threading.Thread,
                     buff.add_bit(1)
                 else:
                     buff.add_bit(0)
-            
+
             for i in bytes_order:
                 if ord(guid_packed[i]):
-                    buff.add("B", ord(guid_packed[i]) ^ 1)   
+                    buff.add("B", ord(guid_packed[i]) ^ 1)
         else:
             buff.add("Q", guid)
         self._send(CMSG_PLAYER_LOGIN, buff)
-        
+
     def _handle_login_verify_world(self, cmd, buff):
         """
         SMSG_LOGIN_VERIFY_WORLD
-        
+
         Contain list of yours character and some info about them.
-        
+
         Returns
         ----------
         map : int
@@ -647,42 +649,42 @@ class World(threading.Thread,
         position_o : float
             orientation
         """
-        
+
         map = buff.get("I")
         position_x = buff.get("f")
         position_y = buff.get("f")
         position_z = buff.get("f")
         position_o = buff.get("f")
-        
+
         self._login_verify_world_done = True
         return map, position_x, position_y, position_z, position_o
-        
+
     def _send_ping(self):
         """
         CMSG_PING
-        
+
         .. todo:: Implement latency
         """
-        
+
         buff = bytebuff()
         latency = 0
         buff.add("I", latency)
         buff.add("I", self._ping_counter)
         self._send(CMSG_PING, buff)
-        
+
     def _handle_pong(self, cmd, buff):
         """
         SMSG_PONG
-        
+
         .. todo:: Implement latency
-        
+
         Returns
         ----------
         ping_counter : int
         latency      : int
             Not implemented
         """
-        
+
         ping_counter = buff.get("I")
         latency = 0
         return ping_counter, latency
@@ -690,21 +692,21 @@ class World(threading.Thread,
     def _handle_time_sync_req(self, cmd, buff):
         """
         SMSG_TIME_SYNC_REQ
-        
+
         Returns
         ----------
         time_sync_counter : int
         """
-        
+
         time_sync_counter = buff.get("I")
         self._send_time_sync_response(time_sync_counter)
         return time_sync_counter
-    
+
     def _send_time_sync_response(self, time_sync_counter):
         """
         CMSG_TIME_SYNC_RESP
         """
-        
+
         buff = bytebuff()
         tick = (monotonic_time.monotonic_time() - self._client_start_time) * 1000
         if self._ver >= EXPANSION_PANDA:
@@ -714,45 +716,45 @@ class World(threading.Thread,
             buff.add("I", time_sync_counter)
             buff.add("I", tick)
         self._send(CMSG_TIME_SYNC_RESP, buff)
-        
+
     def login(self, player):
         """
         Login.
-        
+
         Parameters
         ----------
         player : Player or str
-        
+
         Raises
         ------
         BadPlayer
         """
-        
+
         if isinstance(player, str):
             player, player_name = Player(), player
             player.name = player_name
-        
+
         for player_c in self._my_players:
             if player_c.name == player.name:
                 self._my_player = player_c
                 self._send_player_login(player_c.guid)
                 return
         raise BadPlayer(player)
-    
+
     def wait_get_my_players(self, timeout = WAIT_FUNC_DEFAULT_TIMEOUT):
         """
         _handle_char_enum; SMSG_CHAR_ENUM
-        
+
         Returns
         ----------
         _my_players : dict of Players
-        
+
         Raises
         ------
         TimeoutError
         StreamBrokenError
         """
-        
+
         start_time = monotonic_time.monotonic_time()
         while 1:
             self.err()
@@ -765,17 +767,17 @@ class World(threading.Thread,
                 break
             time.sleep(WAIT_FUNC_SLEEP)
         raise TimeoutError()
-    
+
     def wait_when_login_complete(self, timeout = WAIT_FUNC_DEFAULT_TIMEOUT):
         """
         _handle_login_verify_world; SMSG_LOGIN_VERIFY_WORLD
-        
+
         Raises
         ------
         TimeoutError
         StreamBrokenError
         """
-        
+
         start_time = monotonic_time.monotonic_time()
         while 1:
             self.err()
@@ -784,7 +786,7 @@ class World(threading.Thread,
             if start_time + timeout < monotonic_time.monotonic_time():
                 raise TimeoutError()
             time.sleep(WAIT_FUNC_SLEEP)
-    
+
     def err(self):
         """
         Raises
@@ -796,22 +798,24 @@ class World(threading.Thread,
             raise self._err
 
 
-# CMD : (HANDLER, REQUIRED_FLAGS)        
+# CMD : (HANDLER, REQUIRED_FLAGS)
 WORLD_HANDLERS = {
-SMSG_CHAR_ENUM               : (World._handle_char_enum,            0),
-SMSG_PONG                    : (World._handle_pong,                 0),
-SMSG_AUTH_RESPONSE           : (World._handle_auth_response,        0),
-SMSG_NAME_QUERY_RESPONSE     : (World._handle_name_query_response,  0),
-SMSG_AUTH_CHALLENGE          : (World._handle_auth_challange,       0),
-SMSG_TIME_SYNC_REQ           : (World._handle_time_sync_req,        0),
-SMSG_MESSAGECHAT             : (WorldChat._handle_message_chat,     0),
-SMSG_GM_MESSAGECHAT          : (WorldChat._handle_message_chat,     0),
-CMSG_WHO                     : (WorldMisc._handle_who,              0),
-SMSG_PLAYED_TIME             : (WorldMisc._handle_played_time,      0),
-SMSG_CHANNEL_NOTIFY          : (WorldChannel._handle_notify_packet, 0),
-SMSG_GUILD_EVENT             : (WorldGuild._handle_guild_event,     0),
-SMSG_GUILD_QUERY_RESPONSE    : (WorldGuild._handle_guild_query,     0),
-SMSG_LOGIN_VERIFY_WORLD      : (World._handle_login_verify_world,   0),
-SMSG_WHO                     : (WorldMisc._handle_who,              0),
-SMSG_CHANNEL_LIST            : (WorldChannel._handle_channel_list,  0),
+SMSG_CHAR_ENUM               : (World._handle_char_enum,                 0),
+SMSG_PONG                    : (World._handle_pong,                      0),
+SMSG_AUTH_RESPONSE           : (World._handle_auth_response,             0),
+SMSG_NAME_QUERY_RESPONSE     : (World._handle_name_query_response,       0),
+SMSG_AUTH_CHALLENGE          : (World._handle_auth_challange,            0),
+SMSG_TIME_SYNC_REQ           : (World._handle_time_sync_req,             0),
+SMSG_MESSAGECHAT             : (WorldChat._handle_message_chat,          0),
+SMSG_GM_MESSAGECHAT          : (WorldChat._handle_message_chat,          0),
+CMSG_WHO                     : (WorldMisc._handle_who,                   0),
+SMSG_PLAYED_TIME             : (WorldMisc._handle_played_time,           0),
+SMSG_CHANNEL_NOTIFY          : (WorldChannel._handle_notify_packet,      0),
+SMSG_GUILD_EVENT             : (WorldGuild._handle_guild_event,          0),
+SMSG_GUILD_QUERY_RESPONSE    : (WorldGuild._handle_guild_query,          0),
+SMSG_LOGIN_VERIFY_WORLD      : (World._handle_login_verify_world,        0),
+SMSG_WHO                     : (WorldMisc._handle_who,                   0),
+SMSG_CHANNEL_LIST            : (WorldChannel._handle_channel_list,       0),
+SMSG_AUCTION_LIST_RESULT     : (WorldAuction._handle_auction_list_items, 0),
+MSG_AUCTION_HELLO            : (WorldAuction._handle_auction_hello,      0),
 }

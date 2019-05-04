@@ -19,7 +19,7 @@ from tclib.shared.opcodes_translate import *
 from crypto import *
 
 
-NETWORK_LOOP_SLEEP = 0.2      
+NETWORK_LOOP_SLEEP = 0.2
 
 
 class WorldConnect(threading.Thread):
@@ -34,15 +34,15 @@ class WorldConnect(threading.Thread):
         S_hash : str
         ver : WoWVersions
         """
-        
+
         threading.Thread.__init__(self)
-        
+
         self._acc_name = acc_name
         self._ver = ver
         self._host = host
         self._port = port
         self._world = world
-        
+
         if self._ver >= EXPANSION_PANDA:
             self._crypto = CryptoPANDA(S_hash)
         elif self._ver == EXPANSION_CATA:
@@ -56,40 +56,40 @@ class WorldConnect(threading.Thread):
         self._recv_buff = "" # _recv_to_buff; _recv_command
         self._decrypted_header = () # size; cmd, _recv_command
         self._zlib_stream = zlib.decompressobj()
-        
+
         self._send_queue = Queue.Queue()
         self._recv_queue = Queue.Queue()
-        
+
         self._die = False
         self._err = None
-        
+
         self._connection = None
-        
+
     def _connect(self):
         logging.getLogger("tclib").debug("WORLD: connecting, host: %s, port: %d", self._host, self._port)
         self._connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._connection.connect((self._host, self._port))
         self._connection.setblocking(1)
         logging.getLogger("tclib").debug("WORLD: connected")
-            
+
     def _send_command(self, cmd, buff, encrypt = True):
         data = buff.data
         assert(len(data) < 2**16-7)
         logging.getLogger("tclib").debug("WORLD: sending cmd: %s; data: %s", hex(cmd), buff)
-        
+
         headerbuff = bytebuff()
         headerbuff.add(">H", len(data) + 4)
         headerbuff.add("H", cmd)
         headerbuff.add_zeros(2)
-        
+
         header = headerbuff.data
         if encrypt:
             header = self._crypto.encrypt(header)
         self._send(header + data)
-        
+
     def _send(self, data):
         self._connection.sendall(data)
-        
+
     def _recvall(self, size):
         data = ""
         for i in range(int(60 / NETWORK_LOOP_SLEEP) + 1):
@@ -98,7 +98,7 @@ class WorldConnect(threading.Thread):
             if len(data) == size:
                 return data
         raise StreamBrokenError("Timeout.")
-        
+
     def _recv_to_buff(self):
         bufsize = 4096
         data = ""
@@ -110,18 +110,18 @@ class WorldConnect(threading.Thread):
         except socket.error as e:
             if e.errno not in (errno.EWOULDBLOCK, errno.EAGAIN): # errno.EWOULDBLOCK == busy; sending data
                 raise
-                
+
         self._recv_buff += data
         return len(data)
-    
+
     def die(self):
         """
         Kills that thread (just close sockets)
         """
-        
+
         self._die = True
         self._connection.close()
-        
+
     def run(self):
         try:
             self._worker()
@@ -143,7 +143,7 @@ class WorldConnect(threading.Thread):
             logging.getLogger("tclib").exception(e)
             self._err = StreamBrokenError(e)
             raise
-        
+
     def _worker(self):
         self._connect()
         # SMSG_AUTH_CHALLENGE
@@ -174,7 +174,7 @@ class WorldConnect(threading.Thread):
         # CMSG_AUTH_SESSION
         cmd, buff = self._send_queue.get()
         self._send_command(cmd, buff, False)
-        
+
         self._connection.setblocking(0)
         while 1:
             time.sleep(NETWORK_LOOP_SLEEP)
@@ -191,16 +191,16 @@ class WorldConnect(threading.Thread):
                     self._send_command(cmd, buff)
                 except Queue.Empty:
                     break
-                
+
     def _recv_command(self, decrypt = True):
         """
         .. todo:: rewrite
         """
-        
+
         recv_size = self._recv_to_buff()
         if len(self._recv_buff) < 5 and not self._decrypted_header: # all packets are terminated by 0x00
             return None, None
-        
+
         if not self._decrypted_header: # decrypt header
             if decrypt:
                 first4 = self._crypto.decrypt(self._recv_buff[:4])
@@ -222,7 +222,7 @@ class WorldConnect(threading.Thread):
                 size = (size_1 << 8) + size_2 - 2
             cmd = headerbuff.get("H")
             self._decrypted_header = (size, cmd)
-        
+
         if self._decrypted_header:
             size = self._decrypted_header[0]
             cmd = self._decrypted_header[1]
@@ -239,9 +239,9 @@ class WorldConnect(threading.Thread):
             self._decrypted_header = ()
             logging.getLogger("tclib").debug("WORLD: recv cmd: %s; data: %s", hex(cmd), buff)
             return cmd, buff
-        
+
         return None, None
-            
+
     def send_msg(self, cmd, buff):
         """
         Parameters
@@ -249,9 +249,9 @@ class WorldConnect(threading.Thread):
         cmd : int
         buff : bytebuff
         """
-        
+
         self._send_queue.put((cmd, buff))
-        
+
     def recv_msg(self):
         """
         Returns
@@ -261,14 +261,14 @@ class WorldConnect(threading.Thread):
         buff : bytebuff
             Return None if nothing to return.
         """
-        
+
         cmd, buff = None, None
         try:
             cmd, buff = self._recv_queue.get_nowait()
         except Queue.Empty:
             pass
         return cmd, buff
-    
+
     def err(self):
         """
         Raises
@@ -278,4 +278,3 @@ class WorldConnect(threading.Thread):
 
         if self._err:
             raise self._err
-        
