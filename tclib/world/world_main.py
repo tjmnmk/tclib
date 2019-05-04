@@ -73,7 +73,7 @@ class World(threading.Thread,
         WorldGuild.__init__(self)
         WorldMisc.__init__(self)
 
-        self._acc_name = acc_name
+        self._acc_name = acc_name.upper()
         self._S_hash = S_hash
         self._ver = ver
         self._realm_id = realm_id
