@@ -158,15 +158,12 @@ class WorldConnect(threading.Thread):
             buff = bytebuff(self._connection.recv(44, socket.MSG_WAITALL))
         else:
             buff = bytebuff(self._connection.recv(8, socket.MSG_WAITALL))
-        print len(buff.data)
         size = buff.get(">H") # wotlk - 42, cata - 39; tbc - 6
         cmd = buff.get("H")
-        print cmd
         if self._ver == EXPANSION_CATA:
             cmd = opcode_translate_cata_wotlk(cmd)
         elif self._ver == EXPANSION_PANDA:
             cmd = opcode_translate_panda_wotlk(cmd)
-        print cmd
         if cmd != SMSG_AUTH_CHALLENGE:
             raise StreamBrokenError()
         buff.cut()
