@@ -204,7 +204,6 @@ class WoWVersions(object):
                  (6141,  1, 12, 3, ''),
                  (6005,  1, 12, 2, ''),
                  (5875,  1, 12, 1, ''),
-                 (7100,  1, 12, 1, 't'),
                  )
     
     expansions = { EXPANSION_CATA    : "CATA",
