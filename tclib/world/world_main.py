@@ -55,7 +55,7 @@ class World(threading.Thread,
         See Callback class
     """
 
-    def __init__(self, host, port, acc_name, S_hash, ver, realm_id):
+    def __init__(self, host, port, acc_name, S_hash, ver, realm_id, send_addon_info = False):
         """
         Parameters
         ----------
@@ -77,6 +77,7 @@ class World(threading.Thread,
         self._S_hash = S_hash
         self._ver = ver
         self._realm_id = realm_id
+        self._send_addon_info = send_addon_info
 
         self.callback = Callback()
         self._ping_counter = 0
@@ -289,11 +290,17 @@ class World(threading.Thread,
             buff.add("20s", K)
             buff.add_zeros(4)
         else:
-            buff.add("I", self._ver.get_build())
+            if self._ver.get_versionlist()[3] == "t":
+                buff.add("I", 5875)
+            else:
+                buff.add("I", self._ver.get_build())
             buff.add("I", self._realm_id)
             buff.add("S", self._acc_name)
             buff.add("4s", client_seed)
             buff.add("20s", K)
+
+        if self._send_addon_info:
+            buff.add("k", ADDON_INFO)
 
         self._send(CMSG_AUTH_SESSION, buff)
 
