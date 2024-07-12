@@ -31,12 +31,10 @@ Supported server versions
 * 1.12.1
 * 1.12.1t (for turtle wow)
 
-Example
+Examples
 =======
-See:
-
-[tcbot](https://github.com/meggie-true/tcbot)
-[turtle-wow-world-web](https://github.com/tjmnmk/turtle-wow-world-web)
+* [tcbot](https://github.com/meggie-true/tcbot)
+* [turtle-wow-world-web](https://github.com/tjmnmk/turtle-wow-world-web)
 
 Dependecies
 ===========
