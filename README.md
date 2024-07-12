@@ -10,7 +10,7 @@ Installation
     pip install pycrypto
     git clone https://github.com/meggie-true/tclib.git
     cd tclib
-    python setup.py install
+    *python2* setup.py install
 
 Supported server versions
 =========================
@@ -27,6 +27,7 @@ Supported server versions
 * 1.12.3
 * 1.12.2
 * 1.12.1
+* 1.12.1t (for turtle wow)
 
 Example
 =======
