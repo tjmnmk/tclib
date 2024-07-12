@@ -5,12 +5,14 @@ Trinity Core compatible client library
 
 I used this library for make [tcbot](https://github.com/meggie-true/tcbot).
 
+Only python2
+
 Installation
 ============
     pip install pycrypto
     git clone https://github.com/meggie-true/tclib.git
     cd tclib
-    *python2* setup.py install
+    python2 setup.py install
 
 Supported server versions
 =========================
@@ -31,7 +33,10 @@ Supported server versions
 
 Example
 =======
-See [tcbot](https://github.com/meggie-true/tcbot)
+See:
+
+[tcbot](https://github.com/meggie-true/tcbot)
+[turtle-wow-world-web](https://github.com/tjmnmk/turtle-wow-world-web)
 
 Dependecies
 ===========
